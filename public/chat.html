@@ -55,6 +55,8 @@
         .history-action-btn { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .history-action-btn:hover { background-color: #334155; color: #e2e8f0; }
         .history-item.pinned { background-color: rgba(79, 70, 229, 0.1); }
+    /* Add subtle vertical spacing between consecutive pinned conversations */
+    .history-item.pinned + .history-item.pinned { margin-top: 0.4rem; }
         .pin-icon.pinned { color: #6366f1; }
         
         #app-container { transition: margin-left 0.3s ease-in-out; }
