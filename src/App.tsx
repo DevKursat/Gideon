@@ -8,8 +8,9 @@ import Dashboard from './pages/Dashboard'
 import './index.css'
 
 function App() {
+  const base = (import.meta as any).env?.BASE_URL || '/';
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={base}>
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
