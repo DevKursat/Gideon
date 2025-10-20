@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gideon AI - Gelişmiş Yapay Zeka Asistanı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SUPABASE CLIENT -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.2.12/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+
+    <style>
+        html, body { height: 100%; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: #020617; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        
+        .chat-container::-webkit-scrollbar, #history-list::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-track, #history-list::-webkit-scrollbar-track { background: transparent; }
+        .chat-container::-webkit-scrollbar-thumb, #history-list::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        .typing-indicator span { height: 8px; width: 8px; background-color: #94a3b8; display: inline-block; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-indicator span:nth-of-type(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-of-type(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        
+        .prose pre { position: relative; background-color: #1e293b !important; padding: 1.5rem 1rem 1rem 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.9em; }
+        .prose pre code { background-color: transparent !important; color: #ccc; }
+        .prose code:not(pre *) { background-color: #1e293b; color: #e2e8f0; padding: 0.2em 0.4em; border-radius: 4px; font-size: 90%; }
+        .copy-code-btn { position: absolute; top: 0.5rem; right: 0.5rem; background-color: #334155; color: #cbd5e1; border: none; padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.375rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; }
+        .prose pre:hover .copy-code-btn { opacity: 1; }
+        
+        .suggestion-card { transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; border: 1px solid #1e293b; }
+        .suggestion-card:hover { background-color: #1e293b; transform: translateY(-3px); }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #send-button:disabled { background-image: none; background-color: #475569; cursor: not-allowed; opacity: 0.5; box-shadow: none; transform: none; }
+        
+        /* === CHAT GEÇMİŞİ SIDEBAR STİLLERİ === */
+        #history-sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; background-color: #0f172a; border-right: 1px solid #1e293b; transform: translateX(-100%); transition: transform 0.3s ease-in-out; z-index: 40; display: flex; flex-direction: column; }
+        #history-sidebar.open { transform: translateX(0); }
+        .history-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background-color 0.2s; }
+        .history-item:hover { background-color: #1e293b; }
+        .history-item.active { background-color: #334155; }
+
+        .history-item-title { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; }
+        .history-item-actions { display: none; align-items: center; gap: 4px; padding-left: 8px; }
+        .history-item:hover .history-item-actions, .history-item.editing .history-item-actions { display: flex; }
+        .history-action-btn { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .history-action-btn:hover { background-color: #334155; color: #e2e8f0; }
+        .history-item.pinned { background-color: rgba(79, 70, 229, 0.1); }
+        .pin-icon.pinned { color: #6366f1; }
+        
+        #app-container { transition: margin-left 0.3s ease-in-out; }
+        @media (min-width: 1024px) { #app-container.sidebar-open { margin-left: 280px; } }
+
+        /* === UI/UX İYİLEŞTİRMELERİ (Footer) === */
+        #image-preview-container { position: absolute; bottom: 100%; left: 10px; margin-bottom: 8px; background-color: #1e293b; padding: 8px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.3); animation: fadeIn 0.3s ease-out; }
+        #image-preview { max-width: 80px; max-height: 80px; border-radius: 8px; }
+        #remove-image-btn { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; background-color: #475569; color: #e2e8f0; border-radius: 50%; border: 2px solid #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
+        
+        .chat-input-container { background: linear-gradient(to right, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6)); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.7); transition: all 0.3s ease-in-out; }
+        .chat-input-container:focus-within { border-color: rgba(129, 140, 248, 0.7); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+        
+        .action-button { position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: #94a3b8; background-color: transparent; transition: all 0.2s; }
+        .action-button:hover { background-color: rgba(71, 85, 105, 0.4); color: #c7d2fe; transform: scale(1.1); }
+        .action-button .tooltip { position: absolute; bottom: 120%; white-space: nowrap; background-color: #0f172a; color: #e2e8f0; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 7px; border: 1px solid #334155; opacity: 0; visibility: hidden; transform: translateY(5px); transition: all 0.3s ease; pointer-events: none; }
+        .action-button:hover .tooltip { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .chat-input-container.multiline { flex-direction: column; align-items: flex-end; padding: 12px; }
+        .chat-input-container.multiline textarea { align-self: stretch; margin-bottom: 8px; }
+
+        #send-button { transition: width 0.3s ease, padding 0.3s ease; }
+        #send-button .send-button-text { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width 0.3s ease, margin-left 0.3s ease; display: inline-block; vertical-align: middle; font-weight: 500; font-size: 0.9rem; }
+        .chat-input-container.multiline #send-button { width: auto; padding: 0 1rem 0 0.875rem; }
+        .chat-input-container.multiline #send-button .send-button-text { max-width: 100px; margin-left: 0.5rem; }
+    </style>
+</head>
+<body class="text-slate-300">
+
+    <aside id="history-sidebar" class="text-slate-300">
+        <div class="p-4 flex-shrink-0 border-b border-slate-700 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-slate-200">Sohbet Geçmişi</h2>
+            <button id="close-sidebar-btn" class="p-1 rounded-full text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+            </button>
+        </div>
+        <div class="p-2 flex-shrink-0">
+            <button id="new-chat-btn" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                Yeni Sohbet
+            </button>
+        </div>
+        <div id="history-list" class="flex-grow p-2 overflow-y-auto"></div>
+    </aside>
+
+    <div id="app-container">
+        <div class="flex flex-col h-screen w-full max-w-4xl mx-auto">
+            <header class="flex-shrink-0 p-4 border-b border-slate-800">
+                 <div class="flex items-center justify-between">
+                     <div id="logo-container" class="flex items-center gap-x-3 cursor-pointer group">
+                        <svg class="w-8 h-8 text-indigo-400 group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 21v-1.5M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z"></path></svg>
+                        <h1 class="text-xl font-semibold text-slate-300">Gideon AI</h1>
+                     </div>
+                     <a id="header-auth-link" href="/login" class="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors">Giriş Yap</a>
+                </div>
+            </header>
+            
+            <main id="content-area" class="flex-grow min-h-0 flex flex-col">
+                <div id="welcome-screen" class="flex-grow flex flex-col justify-center items-center p-4">
+                    <div class="text-center">
+                        <h2 class="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-slate-200 to-slate-400 text-transparent bg-clip-text mb-4">Size nasıl yardımcı olabilirim?</h2>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 w-full max-w-2xl">
+                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer" onclick="setSuggestion('Bir blog yazısı için beyin fırtınası yap')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>Blog Yazısı Fikirleri</p><p class="text-sm text-slate-500 mt-1 pl-7">Teknoloji trendleri üzerine beyin fırtınası yap</p></div>
+                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer" onclick="setSuggestion('Bu Python kodunu açıkla')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg> Kod Açıklaması İste</p><p class="text-sm text-slate-500 mt-1 pl-7">Karmaşık bir kod parçasının ne işe yaradığını sor</p></div>
+                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer" onclick="setSuggestion('Haftalık bir yemek planı oluştur')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Plan Oluştur</p><p class="text-sm text-slate-500 mt-1 pl-7">Sağlıklı ve dengeli bir haftalık yemek listesi hazırla</p></div>
+                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer" onclick="setSuggestion('İstanbul\'da gezilecek tarihi yerleri listele')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Gezi Tavsiyesi Al</p><p class="text-sm text-slate-500 mt-1 pl-7">Tarihi bir şehir için gezi rotası planla</p></div>
+                    </div>
+                </div>
+                <div id="chat-window" class="h-full overflow-y-auto chat-container hidden">
+                    <div id="message-container" class="p-4 flex flex-col space-y-6"></div>
+                </div>
+            </main>
+            
+            <footer class="flex-shrink-0 p-4 sm:pb-6 sm:px-6 mt-4">
+                <div class="w-full">
+                    <div class="relative">
+                         <div id="image-preview-container" class="hidden">
+                             <img id="image-preview" src="" alt="Seçilen resim önizlemesi" />
+                             <button id="remove-image-btn" title="Resmi kaldır">&times;</button>
+                         </div>
+                        
+                         <div class="chat-input-container flex items-end w-full rounded-2xl p-2 gap-2">
+                            <textarea id="chat-input" placeholder="Gideon AI'a bir soru sorun..." class="flex-grow w-full max-h-48 bg-transparent pl-2 self-center border-none focus:ring-0 text-slate-200 placeholder-slate-500 text-base resize-none" rows="1"></textarea>
+                            
+                            <div class="button-group-container flex-shrink-0 flex items-center gap-1">
+                                <label for="image-upload-input" class="action-button cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                    <span class="tooltip">Resim Ekle</span>
+                                </label>
+                                <input type="file" id="image-upload-input" class="hidden" accept="image/png, image/jpeg, image/webp">
+
+                                <button id="deep-research-toggle" class="action-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                     <span class="tooltip">Derin Araştırma</span>
+                                </button>
+                                
+                                <button id="send-button" class="group h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out active:scale-95 w-9">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                                    <span class="send-button-text">Gönder</span>
+                                </button>
+                            </div>
+                         </div>
+                    </div>
+                    <p class="text-center text-xs text-slate-600 mt-3">Gideon AI, Erum AI tarafından geliştirilmiştir. Sonuçlar hatalı veya yanıltıcı olabilir.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // === SUPABASE ENTEGRASYONU ===
+        const SUPABASE_URL = 'https://doyqnafbcomnmykpsalo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRveXFuYWZiY29tbm15a3BzYWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDQzMzMsImV4cCI6MjA3NjIyMDMzM30.lIXvu71SOA2s1-9bu0Bn6scvXE70JTZcqD7MF_rEEt0';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                storageKey: 'gideon-auth-token'
+            }
+        });
+
+        // === API AYARLARI ===
+        const API_KEY = 'AIzaSyBUluWHuRKprchtsCZyYRObfkGSolLtCEQ';
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+
+        // === DOM ELEMENTLERİ ===
+        const historySidebar = document.getElementById('history-sidebar');
+        const logoContainer = document.getElementById('logo-container');
+        const appContainer = document.getElementById('app-container');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const historyList = document.getElementById('history-list');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const chatWindow = document.getElementById('chat-window');
+        const messageContainer = document.getElementById('message-container');
+        const chatInput = document.getElementById('chat-input');
+        const chatInputContainer = document.querySelector('.chat-input-container');
+        const sendButton = document.getElementById('send-button');
+        const deepResearchToggle = document.getElementById('deep-research-toggle');
+        const imageUploadInput = document.getElementById('image-upload-input');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const removeImageBtn = document.getElementById('remove-image-btn');
+        let initialTextareaHeight;
+
+        // === UYGULAMA DURUMU (STATE) ===
+        let conversationHistory = [];
+        let currentConversationId = null;
+        let selectedImageBase64 = null;
+        let isDeepResearchEnabled = false;
+        let messageCounter = 0;
+        let currentUser = null;
+        let isGuest = true;
+        let guestMessageCount = 0;
+
+        // === AUTH FLOW & UI UPDATES ===
+        async function checkAuth() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            if (error) {
+                console.error("Oturum alınırken hata oluştu:", error);
+                setupGuestSession();
+                return;
+            }
+            
+            if (session && session.user) {
+                currentUser = session.user;
+                isGuest = false;
+                await updateUIForAuthState(true, currentUser);
+                await loadConversations();
+            } else {
+                setupGuestSession();
+            }
+        }
+
+        function setupGuestSession() {
+            currentUser = null;
+            isGuest = true;
+            guestMessageCount = parseInt(localStorage.getItem('gideon-guest-msg-count') || '0');
+            updateUIForAuthState(false);
+            updateSendButtonState();
+        }
+
+        async function updateUIForAuthState(isLoggedIn, user) {
+            const headerAuthLink = document.getElementById('header-auth-link');
+            const chatInput = document.getElementById('chat-input');
+            
+            // Önce mevcut overlay'i kaldırmayı dene
+            const existingOverlay = document.getElementById('auth-overlay');
+            if (existingOverlay) existingOverlay.remove();
+            
+            chatInput.disabled = false;
+            chatInput.placeholder = "Gideon AI'a bir soru sorun...";
+
+            if (isLoggedIn) {
+                // Header'daki linki Dashboard'a yönlendir
+                headerAuthLink.innerHTML = `
+                    <div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg">
+                        <img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full">
+                        <span class="text-sm font-medium text-slate-300">${user.email}</span>
+                    </div>
+                `;
+                headerAuthLink.href = '/dashboard';
+                historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Geçmiş yükleniyor...</div>';
+            } else {
+                // Header'daki linki Giriş Yap'a yönlendir
+                headerAuthLink.textContent = 'Giriş Yap';
+                headerAuthLink.href = '/login';
+                historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Sohbet geçmişi için giriş yapın.</div>';
+                checkGuestMessageLimit(); 
+            }
+            updateSendButtonState();
+        }
+
+        function showLoginPrompt() {
+            const contentArea = document.getElementById('content-area');
+            // Zaten bir overlay varsa ekleme
+            if (document.getElementById('auth-overlay')) return;
+
+            const overlay = document.createElement('div');
+            overlay.id = 'auth-overlay';
+            overlay.className = 'absolute inset-0 bg-slate-900/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-center p-4';
+            overlay.innerHTML = `
+                <h3 class="text-2xl font-bold text-white mb-2">Devam Etmek İçin Giriş Yapın</h3>
+                <p class="text-slate-400 mb-6">Ücretsiz deneme hakkınız sona erdi. Sohbetlerinizi kaydetmek ve sınırsız devam etmek için lütfen giriş yapın.</p>
+                <a href="/login" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-lg transition-colors">
+                    Giriş Yap
+                </a>
+            `;
+            contentArea.style.position = 'relative';
+            contentArea.appendChild(overlay);
+            
+            const chatInput = document.getElementById('chat-input');
+            chatInput.disabled = true;
+            chatInput.placeholder = "Devam etmek için lütfen giriş yapın...";
+            updateSendButtonState();
+        }
+
+        function checkGuestMessageLimit() {
+            if (isGuest && guestMessageCount >= 5) {
+                showLoginPrompt();
+                return true; // Limit aşıldı
+            }
+            return false; // Limit aşılmadı
+        }
+
+        function closeSidebar() {
+            historySidebar.classList.remove('open');
+            appContainer.classList.remove('sidebar-open');
+        }
+
+        // === EVENT LISTENERS ===
+        logoContainer.addEventListener('click', () => {
+            historySidebar.classList.toggle('open');
+            appContainer.classList.toggle('sidebar-open');
+        });
+
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+
+        appContainer.addEventListener('click', (e) => {
+            if (historySidebar.classList.contains('open') && !historySidebar.contains(e.target) && !logoContainer.contains(e.target)) {
+                closeSidebar();
+            }
+        });
+
+        newChatBtn.addEventListener('click', startNewChat);
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => (e.key === 'Enter' && !e.shiftKey) && (e.preventDefault(), sendMessage()));
+        imageUploadInput.addEventListener('change', handleImageSelection);
+        removeImageBtn.addEventListener('click', removeImage);
+        
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            let scrollHeight = chatInput.scrollHeight;
+            const maxHeight = 128;
+            chatInput.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+            chatInput.style.overflowY = scrollHeight > maxHeight ? 'auto' : 'hidden';
+            updateSendButtonState();
+
+            if (chatInput.scrollHeight > initialTextareaHeight) {
+                chatInputContainer.classList.add('multiline');
+            } else {
+                chatInputContainer.classList.remove('multiline');
+            }
+        });
+        
+        // === FONKSİYONLAR ===
+
+        function startNewChat(keepSidebarOpen = false) {
+            currentConversationId = null;
+            conversationHistory = [];
+            messageContainer.innerHTML = '';
+            chatWindow.classList.add('hidden');
+            welcomeScreen.style.display = 'flex';
+            if (!keepSidebarOpen && historySidebar.classList.contains('open')) {
+                historySidebar.classList.remove('open');
+                appContainer.classList.remove('sidebar-open');
+            }
+            document.querySelectorAll('.history-item.active').forEach(item => item.classList.remove('active'));
+            chatInput.value = '';
+            chatInput.dispatchEvent(new Event('input'));
+            removeImage();
+            // Misafir kullanıcı yeni sohbete başladığında mesaj sayısını sıfırlamıyoruz,
+            // çünkü limit global bir limittir.
+        }
+
+        async function loadConversations() {
+            if (isGuest || !currentUser) {
+                historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Sohbet geçmişi için giriş yapın.</div>';
+                return;
+            }
+            // Sabitleme özelliği için is_pinned sütununu da çekiyoruz.
+            const { data, error } = await supabaseClient.from('conversations').select('id, title, created_at, is_pinned').eq('user_id', currentUser.id).order('is_pinned', { ascending: false }).order('created_at', { ascending: false });
+            
+            if (error) { 
+                console.error('Sohbet geçmişi yüklenemedi:', error); 
+                // is_pinned sütunu yoksa kullanıcıyı bilgilendir
+                if (error.code === '42703') { // "column does not exist"
+                     historyList.innerHTML = '<div class="text-center text-red-400 text-sm p-4">Veritabanı hatası: `is_pinned` sütunu bulunamadı. Lütfen Supabase tablonuzu kontrol edin.</div>';
+                } else {
+                     historyList.innerHTML = '<div class="text-center text-red-400 text-sm p-4">Geçmiş yüklenemedi.</div>';
+                }
+                return; 
+            }
+            
+            historyList.innerHTML = '';
+            if (data.length === 0) {
+                historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Henüz bir sohbetiniz yok.</div>';
+                return;
+            }
+
+            data.forEach(conv => {
+                const item = document.createElement('div');
+                item.className = `history-item p-2.5 rounded-lg text-sm flex items-center justify-between ${conv.is_pinned ? 'pinned' : ''}`;
+                item.dataset.id = conv.id;
+
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'history-item-title';
+                titleSpan.textContent = conv.title || 'Yeni Sohbet';
+                titleSpan.addEventListener('click', () => loadConversation(conv.id));
+                item.appendChild(titleSpan);
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'history-item-actions';
+
+                // Pin Button
+                const pinBtn = document.createElement('button');
+                pinBtn.className = 'history-action-btn';
+                pinBtn.innerHTML = `<svg class="w-4 h-4 pin-icon ${conv.is_pinned ? 'pinned' : ''}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3.5C16.5 2.67157 15.8284 2 15 2H9C8.17157 2 7.5 2.67157 7.5 3.5V9.37868L6.28033 10.5983C5.69457 11.1841 6.13749 12.2071 7 12.2071H17C17.8625 12.2071 18.3054 11.1841 17.7197 10.5983L16.5 9.37868V3.5ZM9.5 4V9.79289L10.6464 10.9393C10.8417 11.1346 11.1583 11.1346 11.3536 10.9393L12.5 9.79289V4H9.5Z M5 14V15C5 15.5523 5.44772 16 6 16H18C18.5523 16 19 15.5523 19 15V14H5Z M12 22L14 18H10L12 22Z"/></svg>`;
+                pinBtn.onclick = (e) => { e.stopPropagation(); togglePinConversation(conv.id, !conv.is_pinned); };
+                actionsDiv.appendChild(pinBtn);
+
+                // Edit Button
+                const editBtn = document.createElement('button');
+                editBtn.className = 'history-action-btn';
+                editBtn.innerHTML = '<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>';
+                editBtn.onclick = (e) => { e.stopPropagation(); enableEditing(item, titleSpan, conv.id); };
+                actionsDiv.appendChild(editBtn);
+
+                // Delete Button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'history-action-btn';
+                deleteBtn.innerHTML = '<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>';
+                deleteBtn.onclick = (e) => { e.stopPropagation(); deleteConversation(conv.id); };
+                actionsDiv.appendChild(deleteBtn);
+
+                item.appendChild(actionsDiv);
+                historyList.appendChild(item);
+            });
+             // Aktif sohbeti tekrar işaretle
+            if (currentConversationId) {
+                const activeItem = document.querySelector(`.history-item[data-id="${currentConversationId}"]`);
+                if (activeItem) activeItem.classList.add('active');
+            }
+        }
+
+        function enableEditing(item, titleSpan, id) {
+            item.classList.add('editing');
+            const currentTitle = titleSpan.textContent;
+            titleSpan.style.display = 'none';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTitle;
+            input.className = 'bg-slate-700 text-white text-sm rounded p-1 w-full focus:outline-none focus:ring-1 focus:ring-indigo-500';
+            item.insertBefore(input, item.firstChild);
+            input.focus();
+            input.select();
+
+            const save = async () => {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    await renameConversation(id, newTitle);
+                }
+                // Düzenleme modundan çık
+                if (input.parentNode) {
+                    input.remove();
+                }
+                titleSpan.style.display = '';
+                item.classList.remove('editing');
+                if (newTitle) titleSpan.textContent = newTitle;
+            };
+
+            input.addEventListener('blur', save);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    save();
+                } else if (e.key === 'Escape') {
+                    input.remove();
+                    titleSpan.style.display = '';
+                    item.classList.remove('editing');
+                }
+            });
+        }
+
+        async function renameConversation(id, newTitle) {
+            const { error } = await supabaseClient.from('conversations').update({ title: newTitle }).eq('id', id);
+            if (error) console.error('Sohbet yeniden adlandırılamadı:', error);
+        }
+
+        async function togglePinConversation(id, shouldPin) {
+            const { error } = await supabaseClient.from('conversations').update({ is_pinned: shouldPin }).eq('id', id);
+            if (error) {
+                console.error('Sabitleme durumu güncellenemedi:', error);
+            } else {
+                await loadConversations(); // Listeyi yeniden yükle
+            }
+        }
+
+        async function deleteConversation(id) {
+            if (!confirm('Bu sohbeti kalıcı olarak silmek istediğinizden emin misiniz?')) return;
+
+            // Önce ilişkili mesajları sil
+            const { error: msgError } = await supabaseClient.from('messages').delete().eq('conversation_id', id);
+            if (msgError) {
+                console.error('Sohbet mesajları silinemedi:', msgError);
+                alert('Hata: Sohbetin mesajları silinemedi.');
+                return;
+            }
+
+            // Sonra sohbetin kendisini sil
+            const { error: convError } = await supabaseClient.from('conversations').delete().eq('id', id);
+            if (convError) {
+                console.error('Sohbet silinemedi:', convError);
+                alert('Hata: Sohbet silinemedi.');
+            } else {
+                // Eğer silinen sohbet aktif sohbet ise, yeni sohbet başlat
+                if (currentConversationId === id) {
+                    startNewChat();
+                }
+                await loadConversations(); // Listeyi yenile
+            }
+        }
+        
+        async function loadConversation(id) {
+            // ID Doğrulaması: Geçersiz ID'lerle sorgu yapılmasını engelle
+            if (!id || typeof id !== 'string') {
+                console.error('loadConversation çağrısı geçersiz ID ile yapıldı:', id);
+                return;
+            }
+            if (currentConversationId === id || isGuest) return;
+
+            conversationHistory = [];
+            messageContainer.innerHTML = '';
+            currentConversationId = id;
+            
+            welcomeScreen.style.display = 'none';
+            chatWindow.classList.remove('hidden');
+            
+            document.querySelectorAll('.history-item.active').forEach(item => item.classList.remove('active'));
+            const activeItem = document.querySelector(`.history-item[data-id="${id}"]`);
+            if (activeItem) activeItem.classList.add('active');
+
+            messageContainer.innerHTML = '<div class="text-center text-slate-400 p-4">Sohbet yükleniyor...</div>';
+
+            const { data, error } = await supabaseClient.from('messages').select('role, content').eq('conversation_id', id).order('created_at', { ascending: true });
+            
+            messageContainer.innerHTML = '';
+
+            if (error) { 
+                // Hata ayıklama için daha detaylı loglama
+                console.error('Mesajlar yüklenemedi. ID:', id, 'Hata:', error); 
+                messageContainer.innerHTML = `<div class="text-center text-red-400 p-4">Mesajlar yüklenirken bir hata oluştu. Lütfen konsolu kontrol edin.</div>`;
+                return; 
+            }
+            
+            data.forEach(msg => {
+                const content = msg.content || {}; 
+                const text = content.text || "";
+                const imageUrl = content.imageUrl;
+
+                const parts = [];
+                if(text) parts.push({ text: text });
+                if(imageUrl) {
+                    const mimeType = imageUrl.startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
+                    parts.push({ inlineData: { mime_type: mimeType, data: imageUrl.split(',')[1] } });
+                }
+
+                if (parts.length > 0) {
+                    conversationHistory.push({ role: msg.role, parts: parts }); 
+                }
+                appendMessage(text, msg.role, false, imageUrl);
+            });
+
+            if (historySidebar.classList.contains('open')) {
+                historySidebar.classList.remove('open');
+                appContainer.classList.remove('sidebar-open');
+            }
+        }
+
+        async function sendMessage() {
+            if (checkGuestMessageLimit()) return;
+
+            if (!API_KEY || API_KEY.includes("YOUR_API_KEY")) {
+                appendMessage('**API Hatası:** Lütfen geçerli bir Gemini API anahtarı ekleyin.', 'ai');
+                return;
+            }
+
+            const userMessage = chatInput.value.trim();
+            if (userMessage === '' && !selectedImageBase64) return;
+            
+            if (welcomeScreen.style.display !== 'none') {
+                welcomeScreen.style.display = 'none';
+                chatWindow.classList.remove('hidden');
+            }
+
+            appendMessage(userMessage, 'user', false, selectedImageBase64);
+
+            // Misafir kullanıcı ise mesaj sayısını artır
+            if (isGuest) {
+                guestMessageCount++;
+                localStorage.setItem('gideon-guest-msg-count', guestMessageCount);
+            }
+
+            let tempConversationId = currentConversationId;
+            // Sadece giriş yapmış kullanıcılar için veritabanı işlemleri
+            if (!isGuest && !tempConversationId) {
+                const title = userMessage.substring(0, 40) || 'Resimli Sohbet';
+                const { data, error } = await supabaseClient.from('conversations').insert({ title: title, user_id: currentUser.id }).select('id').single();
+                if (error) { 
+                    console.error('Yeni sohbet oluşturulamadı:', error); 
+                    appendMessage(`**Veritabanı Hatası:** Yeni sohbet oluşturulamadı. (${error.message})`, 'ai');
+                    return; 
+                }
+                tempConversationId = data.id;
+                currentConversationId = data.id;
+                // Listeyi yenile ve yeni oluşturulan sohbeti aktif olarak işaretle
+                await loadConversations(); 
+                const newActiveItem = document.querySelector(`.history-item[data-id="${currentConversationId}"]`);
+                if (newActiveItem) newActiveItem.classList.add('active');
+            }
+
+            if (!isGuest) {
+                const userContent = { text: userMessage, imageUrl: selectedImageBase64 };
+                if (userContent.text || userContent.imageUrl) {
+                    const { error } = await supabaseClient.from('messages').insert({ 
+                        conversation_id: tempConversationId, 
+                        role: 'user', 
+                        content: userContent, 
+                        user_id: currentUser.id // user_id'nin eklendiğinden emin ol
+                    });
+                    if (error) console.error('Kullanıcı mesajı kaydedilemedi:', error);
+                }
+            }
+
+            const userParts = [];
+            if (userMessage) userParts.push({ text: userMessage });
+            if (selectedImageBase64) {
+                 const mimeType = selectedImageBase64.startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
+                 userParts.push({ inlineData: { mime_type: mimeType, data: selectedImageBase64.split(',')[1] } });
+            }
+            conversationHistory.push({ role: "user", parts: userParts });
+
+            getAiResponse(tempConversationId);
+            
+            chatInput.value = '';
+            chatInput.dispatchEvent(new Event('input'));
+            removeImage();
+            
+            // Mesaj gönderdikten sonra limiti tekrar kontrol et
+            checkGuestMessageLimit();
+        }
+
+        async function getAiResponse(conversationId) {
+            appendMessage('', 'ai', true);
+            
+            const userMessage = conversationHistory.filter(c => c.role === 'user').pop().parts.map(p => p.text).join(' ');
+
+            const systemInstructionText = "Senin adın Gideon AI. 'seni kim yaptı', 'geliştiricin kim', 'kime aitsin' gibi sorulara her zaman 'Ben Erum AI tarafından geliştirilen bir yapay zeka modeliyim.' diye cevap ver. Diğer tüm konularda yardımcı ve profesyonel bir asistansın.";
+            
+            const payload = {
+                contents: conversationHistory,
+                systemInstruction: { parts: [{ text: systemInstructionText }] }
+            };
+
+            const researchKeywords = ['kimdir', 'nedir', 'nasıl yapılır', 'nerede', 'ne kadar', 'hangi', 'kaç', 'ne zaman', 'özeti', 'hakkında bilgi', 'fiyatı', 'son durum'];
+            const lowerCaseMessage = userMessage.toLowerCase();
+            const autoEnableResearch = researchKeywords.some(keyword => lowerCaseMessage.includes(keyword));
+
+            if (isDeepResearchEnabled || autoEnableResearch) {
+                payload.tools = [{ "google_search": {} }];
+                if (autoEnableResearch && !isDeepResearchEnabled) {
+                    const toggle = document.getElementById('deep-research-toggle');
+                    if(toggle) {
+                        toggle.classList.add('flash');
+                        setTimeout(() => toggle.classList.remove('flash'), 1000);
+                    }
+                }
+            }
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                document.getElementById('loading-indicator-wrapper')?.remove();
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Hatası Detayları:", errorData);
+                    const errorMessage = errorData.error?.message || "API'den geçerli bir hata mesajı alınamadı.";
+                    appendMessage(`Üzgünüm, bir hata oluştu. Sunucu cevabı: ${response.status}. Detay: ${errorMessage}`, 'ai');
+                    conversationHistory.pop();
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                    const aiResponseText = data.candidates[0].content.parts[0].text;
+                    appendMessage(aiResponseText, 'ai');
+                    conversationHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
+
+                    if (!isGuest && conversationId) {
+                        const { error } = await supabaseClient.from('messages').insert({ 
+                            conversation_id: conversationId, 
+                            role: 'model', 
+                            content: { text: aiResponseText }, 
+                            user_id: currentUser.id // user_id'nin eklendiğinden emin ol
+                        });
+                        if (error) console.error('AI mesajı kaydedilemedi:', error);
+                    }
+
+                } else {
+                    console.error("Geçersiz API Cevabı veya Güvenlik Engeli:", data);
+                    const blockReason = data.promptFeedback?.blockReason;
+                    let feedbackMessage = 'API\'den boş veya geçersiz bir yanıt alındı.';
+                    if (blockReason) {
+                        feedbackMessage = `İsteğiniz "${blockReason}" nedeniyle engellendi.`;
+                    }
+                    appendMessage(feedbackMessage, 'ai');
+                    conversationHistory.pop();
+                }
+            } catch (error) {
+                console.error("Fetch isteği başarısız oldu:", error);
+                document.getElementById('loading-indicator-wrapper')?.remove();
+                appendMessage(`Bir ağ hatası oluştu. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin. Detay: ${error.message}`, 'ai');
+                conversationHistory.pop();
+            }
+        }
+        
+        function appendMessage(message, sender, isLoading = false, imageUrl = null) {
+             const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('w-full', 'fade-in');
+            let messageHTML = '';
+            if (sender === 'user') {
+                messageWrapper.classList.add('flex', 'justify-end');
+                let imageHTML = imageUrl ? `<img src="${imageUrl}" alt="Yüklenen resim" class="mt-2 rounded-lg max-w-full h-auto" style="max-height: 200px;">` : '';
+                const messageTextHTML = message ? `<p class="text-base">${message.replace(/\n/g, '<br>')}</p>` : '';
+                
+                // Kullanıcı avatarını oluştur
+                const avatarURL = currentUser?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.email || 'G')}&background=random`;
+                const avatarHTML = `<div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-semibold border-2 border-slate-600 order-2"><img src="${avatarURL}" alt="User Avatar" class="w-full h-full rounded-full"></div>`;
+
+                messageHTML = `<div class="flex items-start gap-3 max-w-[85%]"><div class="bg-indigo-600 rounded-2xl rounded-br-lg p-3 text-white shadow-md order-1">${imageHTML}${messageTextHTML}</div>${avatarHTML}</div>`;
+            } else {
+                messageWrapper.classList.add('flex', 'justify-start');
+                let contentHTML;
+                if (isLoading) {
+                    messageWrapper.id = 'loading-indicator-wrapper';
+                    contentHTML = `<div class="bg-slate-800 rounded-2xl rounded-tl-lg p-3 typing-indicator"><span></span><span></span><span></span></div>`;
+                } else {
+                    const renderer = new marked.Renderer();
+                    renderer.code = (code, language) => { messageCounter++; const validLanguage = Prism.languages[language] ? language : 'clike'; const highlightedCode = Prism.highlight(code, Prism.languages[validLanguage], validLanguage); return `<pre class="language-${validLanguage}"><button class="copy-code-btn" data-clipboard-target="#code-${messageCounter}">Kopyala</button><code id="code-${messageCounter}">${highlightedCode}</code></pre>`; };
+                    const renderedHtml = marked.parse(message, { renderer: renderer, breaks: true, gfm: true });
+                    contentHTML = `<div class="bg-slate-800 rounded-2xl rounded-tl-lg p-1 shadow-md"><div class="prose prose-invert prose-sm max-w-none text-slate-300 p-3">${renderedHtml}</div></div>`;
+                }
+                 messageHTML = `<div class="flex items-start gap-3 max-w-[85%]"><div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center"><svg class="w-6 h-6 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 21v-1.5M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z" /></svg></div>${contentHTML}</div>`;
+            }
+            messageWrapper.innerHTML = messageHTML;
+            messageContainer.appendChild(messageWrapper);
+            if (!isLoading) { initializeCopyButtons(); }
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+        }
+
+        function updateSendButtonState() { 
+            const limitReached = isGuest && guestMessageCount >= 5;
+            sendButton.disabled = (chatInput.value.trim() === '' && !selectedImageBase64) || limitReached; 
+        }
+        function removeImage() { selectedImageBase64 = null; imagePreview.src = ''; imagePreviewContainer.classList.add('hidden'); imageUploadInput.value = ''; updateSendButtonState(); }
+        function setSuggestion(text) { 
+            if (checkGuestMessageLimit()) return;
+            chatInput.value = text; 
+            chatInput.focus(); 
+            chatInput.dispatchEvent(new Event('input')); 
+        }
+        function initializeCopyButtons() { 
+            const clipboard = new ClipboardJS('.copy-code-btn');
+            clipboard.on('success', (e) => {
+                e.trigger.textContent = 'Kopyalandı!';
+                setTimeout(() => { e.trigger.textContent = 'Kopyala'; }, 2000);
+            });
+        }
+        function handleImageSelection(event) {
+            if (checkGuestMessageLimit()) return;
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas'); const MAX_SIZE = 512;
+                    let { width, height } = img;
+                    if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                    } else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+                    selectedImageBase64 = canvas.toDataURL('image/jpeg', 0.75);
+                    imagePreview.src = selectedImageBase64;
+                    imagePreviewContainer.classList.remove('hidden'); updateSendButtonState();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // UYGULAMA BAŞLANGICI
+        document.addEventListener('DOMContentLoaded', () => {
+            initialTextareaHeight = chatInput.clientHeight;
+            checkAuth();
+
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN') {
+                    currentUser = session.user;
+                    isGuest = false;
+                    localStorage.removeItem('gideon-guest-msg-count'); // Misafir sayacını temizle
+                    updateUIForAuthState(true, currentUser);
+                    startNewChat(); // Arayüzü temizle
+                    loadConversations(); // Yeni kullanıcının geçmişini yükle
+                } else if (event === 'SIGNED_OUT') {
+                    setupGuestSession();
+                    startNewChat(); // Arayüzü temizle
+                }
+            });
+        });
+    </script>
+</body>
+</html>
