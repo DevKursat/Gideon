@@ -68,7 +68,7 @@ export default function Dashboard() {
             )}
             
             <a 
-              href="/chat.html" 
+              href={(import.meta as any).env?.BASE_URL + 'chat.html'} 
               className="btn-chat-redirect"
               style={{
                 display: 'inline-flex',

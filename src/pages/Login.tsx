@@ -27,7 +27,7 @@ export default function Login() {
       if (error) {
         setError(error)
       } else {
-        window.location.href = '/chat.html'
+  window.location.href = (import.meta as any).env?.BASE_URL + 'chat.html'
       }
     } catch (err) {
       setError('Giriş yapılırken bir hata oluştu')

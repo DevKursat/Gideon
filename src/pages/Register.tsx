@@ -42,9 +42,9 @@ export default function Register() {
         setError(error)
       } else {
         setSuccess(true)
-        setTimeout(() => {
-          window.location.href = '/chat.html'
-        }, 2000)
+          setTimeout(() => {
+            window.location.href = (import.meta as any).env?.BASE_URL + 'chat.html'
+          }, 2000)
       }
     } catch (err) {
       setError('Kayıt olurken bir hata oluştu')
