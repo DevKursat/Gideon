@@ -27,7 +27,8 @@ export default function Login() {
       if (error) {
         setError(error)
       } else {
-        window.location.href = '/chat.html'
+        // Vite'ın base URL'sini kullanarak doğru yolu oluştur
+        window.location.href = `${import.meta.env.BASE_URL}chat.html`
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
