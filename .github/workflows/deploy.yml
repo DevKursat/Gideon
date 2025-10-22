@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - Kursat # Sadece 'Kursat' dalına push yapıldığında çalışır
+      - kursat # Sadece 'kursat' dalına push yapıldığında çalışır
 
 jobs:
   build-and-deploy:
