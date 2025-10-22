@@ -1,60 +1,15 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import '../styles/dashboard.css';
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import '../styles/dashboard.css'
 
 export default function Dashboard() {
-  const { user, signOut, updateUser } = useAuth();
-  const navigate = useNavigate();
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
-  const email = user?.email || '';
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
-  };
-
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    const updates: { email?: string; data?: { full_name: string } } = {};
-    if (email !== user?.email) {
-      updates.email = email;
-      setSuccess('E-posta adresinizi güncellemek için bir onay e-postası gönderildi. Lütfen e-postanızı kontrol edin.');
-    }
-    if (fullName !== user?.user_metadata?.full_name) {
-      updates.data = { full_name: fullName };
-      setSuccess('Adınız başarıyla güncellendi.');
-    }
-
-    if (Object.keys(updates).length === 0) {
-      setIsEditing(false);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { error: updateError } = await updateUser(updates);
-      if (updateError) {
-        throw new Error(updateError);
-      }
-      // Başarı mesajı zaten yukarıda ayarlandı.
-      setIsEditing(false);
-    } catch (err: any) {
-      setError(err.message || 'Güncelleme sırasında bir hata oluştu.');
-      setSuccess(''); // Hata durumunda başarı mesajını temizle
-    } finally {
-      setLoading(false);
-    }
-  };
+    await signOut()
+    navigate('/login')
+  }
 
   return (
     <div className="dashboard-container">
@@ -127,9 +82,31 @@ export default function Dashboard() {
               <p className="user-name">{user.user_metadata.full_name}</p>
             )}
             
-                          <a 
-              href={(import.meta as any).env?.BASE_URL + 'chat.html'} 
+            <a
+              href="/chat.html"
               className="btn-chat-redirect"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                marginTop: '1.5rem',
+                padding: '0.875rem 1.75rem',
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                color: 'white',
+                borderRadius: '12px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
+              }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -174,67 +151,32 @@ export default function Dashboard() {
           </div>
 
           <div className="user-info-card">
-            <div className="user-info-header">
-              <h2>Hesap Bilgileri</h2>
-              {!isEditing && (
-                <button onClick={() => setIsEditing(true)} className="btn-edit">Düzenle</button>
+            <h2>Hesap Bilgileri</h2>
+            <div className="user-info-grid">
+              <div className="user-info-item">
+                <span className="info-label">User ID:</span>
+                <span className="info-value">{user?.id}</span>
+              </div>
+              <div className="user-info-item">
+                <span className="info-label">E-posta:</span>
+                <span className="info-value">{user?.email}</span>
+              </div>
+              {user?.created_at && (
+                <div className="user-info-item">
+                  <span className="info-label">Kayıt Tarihi:</span>
+                  <span className="info-value">
+                    {new Date(user.created_at).toLocaleDateString('tr-TR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                </div>
               )}
             </div>
-
-            {error && <div className="error-message" style={{marginBottom: '1rem'}}>{error}</div>}
-            {success && <div className="success-message" style={{marginBottom: '1rem'}}>{success}</div>}
-
-            {isEditing ? (
-              <form onSubmit={handleUpdate}>
-                <div className="user-info-grid">
-                  <div className="user-info-item">
-                    <label htmlFor="fullName">Ad Soyad</label>
-                    <input id="fullName" type="text" value={fullName} onChange={e => setFullName(e.target.value)} disabled={loading} />
-                  </div>
-                  <div className="user-info-item">
-                    <label htmlFor="email">E-posta</label>
-                    <input id="email" type="email" value={email} readOnly disabled />
-                    <small style={{ color: '#9ca3af', marginTop: '5px', display: 'block' }}>E-posta adresi güvenlik nedeniyle değiştirilemez.</small>
-                  </div>
-                </div>
-                <div className="edit-actions">
-                  <button type="button" onClick={() => setIsEditing(false)} className="btn-cancel" disabled={loading}>İptal</button>
-                  <button type="submit" className="btn-save" disabled={loading}>
-                    {loading ? 'Kaydediliyor...' : 'Kaydet'}
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div className="user-info-grid">
-                <div className="user-info-item">
-                  <span className="info-label">Ad Soyad:</span>
-                  <span className="info-value">{user?.user_metadata?.full_name || 'Belirtilmemiş'}</span>
-                </div>
-                <div className="user-info-item">
-                  <span className="info-label">E-posta:</span>
-                  <span className="info-value">{user?.email}</span>
-                </div>
-                <div className="user-info-item">
-                  <span className="info-label">User ID:</span>
-                  <span className="info-value">{user?.id}</span>
-                </div>
-                {user?.created_at && (
-                  <div className="user-info-item">
-                    <span className="info-label">Kayıt Tarihi:</span>
-                    <span className="info-value">
-                      {new Date(user.created_at).toLocaleDateString('tr-TR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </main>
     </div>
-  );
+  )
 }

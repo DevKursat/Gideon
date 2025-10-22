@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import '../styles/auth.css'
 
@@ -12,7 +12,6 @@ export default function Register() {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const { signUp } = useAuth()
-  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,23 +36,15 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const { error } = await signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-          },
-        },
-      })
+      const { error } = await signUp({ email, password, fullName })
       
       if (error) {
-        setError(error.message)
+        setError(error)
       } else {
         setSuccess(true)
         setTimeout(() => {
-          navigate('/dashboard')
-        }, 800)
+          window.location.href = '/chat.html'
+        }, 2000)
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
@@ -159,16 +150,16 @@ export default function Register() {
               'Kayıt Ol'
             )}
           </button>
-
-          <div className="auth-footer">
-            <p>
-              Zaten bir hesabınız var mı? <Link to="/login">Giriş Yap</Link>
-            </p>
-            <p className="policy-text">
-              Kaydolarak, <Link to="/terms-of-service" target="_blank">Kullanım Koşullarımızı</Link> ve <Link to="/pricing-policy" target="_blank">Fiyatlandırma Politikamızı</Link> kabul etmiş olursunuz.
-            </p>
-          </div>
         </form>
+
+        <div className="auth-footer">
+          <p>
+            Zaten hesabınız var mı?{' '}
+            <Link to="/login" className="auth-link">
+              Giriş Yap
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
