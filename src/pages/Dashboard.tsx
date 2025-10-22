@@ -83,7 +83,7 @@ export default function Dashboard() {
             )}
             
             <a
-              href="/chat.html"
+              href="chat.html"
               className="btn-chat-redirect"
               style={{
                 display: 'inline-flex',
