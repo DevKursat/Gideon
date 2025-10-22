@@ -12,7 +12,7 @@ import './index.css'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Gideon">
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
@@ -33,11 +33,11 @@ function App() {
           <Route
             path="/prices"
             element={
-              // <ProtectedRoute> // Temporarily remove protection for verification
+              <ProtectedRoute>
                 <SubscriptionProvider>
                   <Prices />
                 </SubscriptionProvider>
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route path="*" element={<Navigate to="/login" replace />} />
