@@ -815,5 +815,75 @@
             });
         });
     </script>
-</body>
+    <script src="../src/lib/supabase.ts" type="module"></script>
+    <script src="../src/utils/supabaseClient.ts" type="module"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hasSeenWalkthrough = localStorage.getItem('hasSeenGideonChatWalkthrough');
+            if (!hasSeenWalkthrough) {
+                createWalkthrough();
+                localStorage.setItem('hasSeenGideonChatWalkthrough', 'true');
+            }
+        });
+
+        function createWalkthrough() {
+            const overlay = document.createElement('div');
+            overlay.className = 'walkthrough-overlay';
+
+            const container = document.createElement('div');
+            container.className = 'walkthrough-container';
+
+            const closeButton = document.createElement('button');
+            closeButton.className = 'walkthrough-close';
+            closeButton.innerHTML = '×';
+
+            const title = document.createElement('h2');
+            title.textContent = 'Gideon\'a Hoş Geldiniz!';
+
+            const tip = document.createElement('div');
+            tip.className = 'walkthrough-tip';
+
+            const tipText = document.createElement('p');
+            tipText.innerHTML = 'Sohbet geçmişinize ulaşmak için sol üstteki <strong>logo ve isme</strong> tıklayabilirsiniz.';
+            tip.appendChild(tipText);
+
+            const highlight = document.createElement('div');
+            highlight.className = 'walkthrough-highlight';
+            
+            const gotItButton = document.createElement('button');
+            gotItButton.className = 'walkthrough-got-it';
+            gotItButton.textContent = 'Anladım!';
+
+            container.append(closeButton, title, tip, gotItButton);
+            overlay.appendChild(container);
+            document.body.appendChild(overlay);
+            
+            const sidebarHeader = document.querySelector('.sidebar-header');
+            if (sidebarHeader) {
+                const rect = sidebarHeader.getBoundingClientRect();
+                highlight.style.position = 'fixed';
+                highlight.style.left = `${rect.left - 10}px`;
+                highlight.style.top = `${rect.top - 10}px`;
+                highlight.style.width = `${rect.width + 20}px`;
+                highlight.style.height = `${rect.height + 20}px`;
+                document.body.appendChild(highlight);
+            }
+
+            const removeWalkthrough = () => {
+                overlay.remove();
+                if (document.body.contains(highlight)) {
+                    highlight.remove();
+                }
+            };
+
+            overlay.onclick = (e) => {
+                if (e.target === overlay) {
+                    removeWalkthrough();
+                }
+            };
+            closeButton.onclick = removeWalkthrough;
+            gotItButton.onclick = removeWalkthrough;
+        }
+    </script>
+  </body>
 </html>

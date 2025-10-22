@@ -36,10 +36,18 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const { error } = await signUp({ email, password, fullName })
+      const { error } = await signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
+      })
       
       if (error) {
-        setError(error)
+        setError(error.message)
       } else {
         setSuccess(true)
           setTimeout(() => {
@@ -135,26 +143,19 @@ export default function Register() {
             />
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? (
-              <>
-                <span className="spinner"></span>
-                Kayıt yapılıyor...
-              </>
-            ) : (
-              'Kayıt Ol'
-            )}
+          <button type="submit" className="btn-auth" disabled={loading}>
+            {loading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}
           </button>
-        </form>
 
-        <div className="auth-footer">
-          <p>
-            Zaten hesabınız var mı?{' '}
-            <Link to="/login" className="auth-link">
-              Giriş Yap
-            </Link>
-          </p>
-        </div>
+          <div className="auth-footer">
+            <p>
+              Zaten bir hesabınız var mı? <Link to="/login">Giriş Yap</Link>
+            </p>
+            <p className="policy-text">
+              Kaydolarak, <Link to="/terms-of-service" target="_blank">Kullanım Koşullarımızı</Link> ve <Link to="/pricing-policy" target="_blank">Fiyatlandırma Politikamızı</Link> kabul etmiş olursunuz.
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   )
