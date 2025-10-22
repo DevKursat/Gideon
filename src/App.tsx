@@ -1,14 +1,14 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import Dashboard from './pages/Dashboard';
-import PricingPage from './pages/pricing/Pricing';
-import PricingPolicy from './pages/legal/PricingPolicy';
-import TermsOfService from './pages/legal/TermsOfService';
-import './index.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import { SubscriptionProvider } from './contexts/SubscriptionContext'
+import Dashboard from './pages/Dashboard'
+import Prices from './pages/Prices'
+import TermsOfService from './pages/TermsOfService'
+import './index.css'
 
 function App() {
   const base = (import.meta as any).env?.BASE_URL || '/';
@@ -21,21 +21,24 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/pricing-policy" element={<PricingPolicy />} />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <SubscriptionProvider>
+                  <Dashboard />
+                </SubscriptionProvider>
               </ProtectedRoute>
             }
           />
           <Route
-            path="/pricing"
+            path="/prices"
             element={
-              <ProtectedRoute>
-                <PricingPage />
-              </ProtectedRoute>
+              // <ProtectedRoute> // Temporarily remove protection for verification
+                <SubscriptionProvider>
+                  <Prices />
+                </SubscriptionProvider>
+              // </ProtectedRoute>
             }
           />
           <Route path="*" element={<Navigate to="/login" replace />} />

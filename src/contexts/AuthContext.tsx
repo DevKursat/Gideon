@@ -89,20 +89,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         return { error };
       }
-      return { error: null };
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' };
+
+      return { error: 'Kayıt işlemi başarısız oldu' }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   };
 
   const signIn = async ({ email, password }: SignInCredentials) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { error: error.message };
-      if (data.user) return { error: null };
-      return { error: 'Giriş işlemi başarısız oldu' };
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' };
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) {
+        return { error: error.message }
+      }
+
+      if (data.user) {
+        return { error: null }
+      }
+
+      return { error: 'Giriş işlemi başarısız oldu' }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   };
 
@@ -118,6 +135,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const resetPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      })
+
+      if (error) {
+        return { error: error.message }
+      }
+
+      return { error: null }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) return { error: error.message };
@@ -143,9 +173,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return data.user as User;
         });
       }
-      return { error: null };
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' };
+
+      return { error: null }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   };
 

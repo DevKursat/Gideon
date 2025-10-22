@@ -31,7 +31,8 @@ export default function Login() {
         // Navigate into the SPA (dashboard) instead of using chat.html
         navigate('/dashboard')
       }
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
       setError('Giriş yapılırken bir hata oluştu')
     } finally {
       setLoading(false)
