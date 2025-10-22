@@ -14,30 +14,31 @@ const Prices: React.FC = () => {
 
   return (
     <div className="prices-container">
-      <button
-        onClick={() => window.location.href = `${import.meta.env.BASE_URL}chat.html`}
-        className="chat-redirect-btn"
-      >
-        Gideon AI Chat'e Git
-      </button>
-
       <div className="prices-header">
         <h1>Abonelik Planları</h1>
         <p>Gideon'un tüm potansiyelini ortaya çıkarın. Size en uygun planı seçin.</p>
       </div>
 
-      <div className="billing-cycle-switch">
+      <div className="controls-container">
+        <div className="billing-cycle-switch">
+          <button
+            className={billingCycle === 'monthly' ? 'active' : ''}
+            onClick={() => setBillingCycle('monthly')}
+          >
+            Aylık
+          </button>
+          <button
+            className={billingCycle === 'yearly' ? 'active' : ''}
+            onClick={() => setBillingCycle('yearly')}
+          >
+            Yıllık
+          </button>
+        </div>
         <button
-          className={billingCycle === 'monthly' ? 'active' : ''}
-          onClick={() => setBillingCycle('monthly')}
+          onClick={() => window.location.href = `${import.meta.env.BASE_URL}chat.html`}
+          className="chat-redirect-btn"
         >
-          Aylık
-        </button>
-        <button
-          className={billingCycle === 'yearly' ? 'active' : ''}
-          onClick={() => setBillingCycle('yearly')}
-        >
-          Yıllık
+          Gideon AI Chat'e Git
         </button>
       </div>
 
