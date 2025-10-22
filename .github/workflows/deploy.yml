@@ -3,11 +3,13 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - kursat # Sadece 'kursat' dalına push yapıldığında çalışır
+      - main # Sadece 'main' dalına push yapıldığında çalışır
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest # İşin çalışacağı sanal makine
+    permissions:
+      contents: write # Action'ın gh-pages dalına push yapabilmesi için izin
 
     steps:
       - name: Checkout repository
