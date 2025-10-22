@@ -27,3 +27,10 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Test results
+/test-results/
+/playwright-report/
+
+# Jules scratch directory
+/jules-scratch/
