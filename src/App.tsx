@@ -4,7 +4,10 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
+import { SubscriptionProvider } from './contexts/SubscriptionContext'
 import Dashboard from './pages/Dashboard'
+import Prices from './pages/Prices'
+import TermsOfService from './pages/TermsOfService'
 import './index.css'
 
 function App() {
@@ -16,12 +19,25 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <SubscriptionProvider>
+                  <Dashboard />
+                </SubscriptionProvider>
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/prices"
+            element={
+              // <ProtectedRoute> // Temporarily remove protection for verification
+                <SubscriptionProvider>
+                  <Prices />
+                </SubscriptionProvider>
+              // </ProtectedRoute>
             }
           />
           <Route path="*" element={<Navigate to="/login" replace />} />
