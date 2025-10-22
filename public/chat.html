@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gideon AI - Gelişmiş Yapay Zeka Asistanı</title>
+    <script>
+        // Set dark mode strategy for Tailwind CDN
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SUPABASE CLIENT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,7 +24,7 @@
 
     <style>
         html, body { height: 100%; overflow: hidden; }
-        body { font-family: 'Inter', sans-serif; background-color: #020617; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        /* body { font-family: 'Inter', sans-serif; background-color: #020617; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } */
 
         .chat-container::-webkit-scrollbar, #history-list::-webkit-scrollbar { width: 6px; }
         .chat-container::-webkit-scrollbar-track, #history-list::-webkit-scrollbar-track { background: transparent; }
@@ -86,12 +92,12 @@
         .chat-input-container.multiline #send-button .send-button-text { max-width: 100px; margin-left: 0.5rem; }
     </style>
 </head>
-<body class="text-slate-300">
+<body class="font-sans antialiased select-none bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
 
-    <aside id="history-sidebar" class="text-slate-300">
-        <div class="p-4 flex-shrink-0 border-b border-slate-700 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-slate-200">Sohbet Geçmişi</h2>
-            <button id="close-sidebar-btn" class="p-1 rounded-full text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-colors">
+    <aside id="history-sidebar" class="bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">
+        <div class="p-4 flex-shrink-0 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-200">Sohbet Geçmişi</h2>
+            <button id="close-sidebar-btn" class="p-1 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                 </svg>
@@ -108,26 +114,31 @@
 
     <div id="app-container">
         <div class="flex flex-col h-screen w-full max-w-4xl mx-auto">
-            <header class="flex-shrink-0 p-4 border-b border-slate-800">
+            <header class="flex-shrink-0 p-4 border-b bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                  <div class="flex items-center justify-between">
                      <div id="logo-container" class="flex items-center gap-x-3 cursor-pointer group">
-                        <svg class="w-8 h-8 text-indigo-400 group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 21v-1.5M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z"></path></svg>
-                        <h1 class="text-xl font-semibold text-slate-300">Gideon AI</h1>
+                        <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 21v-1.5M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z"></path></svg>
+                        <h1 class="text-xl font-semibold text-slate-800 dark:text-slate-200">Gideon AI</h1>
                      </div>
-                     <a id="header-auth-link" href="/login" class="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors">Giriş Yap</a>
+                     <div class="flex items-center gap-4">
+                        <button id="theme-toggle-btn" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                            {/* Icons will be injected by script */}
+                        </button>
+                        <a id="header-auth-link" href="/login" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400">Giriş Yap</a>
+                     </div>
                 </div>
             </header>
 
             <main id="content-area" class="flex-grow min-h-0 flex flex-col">
                 <div id="welcome-screen" class="flex-grow flex flex-col justify-center items-center p-4 overflow-y-auto">
                     <div class="text-center flex-shrink-0">
-                        <h2 class="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-slate-200 to-slate-400 text-transparent bg-clip-text mb-4">Size nasıl yardımcı olabilirim?</h2>
+                        <h2 class="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 text-transparent bg-clip-text mb-4">Size nasıl yardımcı olabilirim?</h2>
                     </div>
                     <div class="suggestions-container flex flex-col gap-4 mt-8 w-full max-w-2xl pb-4 sm:grid sm:grid-cols-2">
-                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto" onclick="setSuggestion('Bir blog yazısı için beyin fırtınası yap')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>Blog Yazısı Fikirleri</p><p class="text-sm text-slate-500 mt-1 pl-7">Teknoloji trendleri üzerine beyin fırtınası yap</p></div>
-                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto" onclick="setSuggestion('Bu Python kodunu açıkla')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg> Kod Açıklaması İste</p><p class="text-sm text-slate-500 mt-1 pl-7">Karmaşık bir kod parçasının ne işe yaradığını sor</p></div>
-                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto" onclick="setSuggestion('Haftalık bir yemek planı oluştur')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Plan Oluştur</p><p class="text-sm text-slate-500 mt-1 pl-7">Sağlıklı ve dengeli bir haftalık yemek listesi hazırla</p></div>
-                        <div class="suggestion-card bg-slate-900 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto" onclick="setSuggestion('İstanbul\'da gezilecek tarihi yerleri listele')"><p class="font-semibold text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Gezi Tavsiyesi Al</p><p class="text-sm text-slate-500 mt-1 pl-7">Tarihi bir şehir için gezi rotası planla</p></div>
+                        <div class="suggestion-card bg-white dark:bg-slate-800/50 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50" onclick="setSuggestion('Bir blog yazısı için beyin fırtınası yap')"><p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>Blog Yazısı Fikirleri</p><p class="text-sm text-slate-500 dark:text-slate-400 mt-1 pl-7">Teknoloji trendleri üzerine beyin fırtınası yap</p></div>
+                        <div class="suggestion-card bg-white dark:bg-slate-800/50 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50" onclick="setSuggestion('Bu Python kodunu açıkla')"><p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg> Kod Açıklaması İste</p><p class="text-sm text-slate-500 dark:text-slate-400 mt-1 pl-7">Karmaşık bir kod parçasının ne işe yaradığını sor</p></div>
+                        <div class="suggestion-card bg-white dark:bg-slate-800/50 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50" onclick="setSuggestion('Haftalık bir yemek planı oluştur')"><p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Plan Oluştur</p><p class="text-sm text-slate-500 dark:text-slate-400 mt-1 pl-7">Sağlıklı ve dengeli bir haftalık yemek listesi hazırla</p></div>
+                        <div class="suggestion-card bg-white dark:bg-slate-800/50 p-4 rounded-xl cursor-pointer flex-shrink-0 w-full sm:w-auto border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50" onclick="setSuggestion('İstanbul\'da gezilecek tarihi yerleri listele')"><p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Gezi Tavsiyesi Al</p><p class="text-sm text-slate-500 dark:text-slate-400 mt-1 pl-7">Tarihi bir şehir için gezi rotası planla</p></div>
                     </div>
                 </div>
                 <div id="chat-window" class="h-full overflow-y-auto chat-container hidden">
@@ -143,21 +154,21 @@
                              <button id="remove-image-btn" title="Resmi kaldır">&times;</button>
                          </div>
 
-                         <div class="chat-input-container flex items-end w-full rounded-2xl p-2 gap-2">
-                            <textarea id="chat-input" placeholder="Gideon AI'a bir soru sorun..." class="flex-grow w-full max-h-48 bg-transparent pl-2 self-center border-none focus:ring-0 text-slate-200 placeholder-slate-500 text-base resize-none" rows="1"></textarea>
+                         <div class="chat-input-container flex items-end w-full rounded-2xl p-2 gap-2 bg-white dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700">
+                            <textarea id="chat-input" placeholder="Gideon AI'a bir soru sorun..." class="flex-grow w-full max-h-48 bg-transparent pl-2 self-center border-none focus:ring-0 text-slate-800 dark:text-slate-200 placeholder-slate-500 dark:placeholder-slate-400 text-base resize-none" rows="1"></textarea>
 
                             <div class="button-group-container flex-shrink-0 flex items-center gap-1">
-                                <button id="file-upload-button" class="action-button">
+                                <button id="file-upload-button" class="action-button text-slate-500 dark:text-slate-400">
                                     <svg id="file-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"></path><path d="M2 9h20"></path></svg>
                                     <span class="tooltip">Dosya Ekle (Premium)</span>
                                 </button>
-                                <label for="image-upload-input" class="action-button cursor-pointer">
+                                <label for="image-upload-input" class="action-button cursor-pointer text-slate-500 dark:text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                                     <span class="tooltip">Resim Ekle</span>
                                 </label>
                                 <input type="file" id="image-upload-input" class="hidden" accept="image/png, image/jpeg, image/webp">
 
-                                <button id="deep-research-toggle" class="action-button">
+                                <button id="deep-research-toggle" class="action-button text-slate-500 dark:text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                                      <span class="tooltip">Derin Araştırma</span>
                                 </button>
@@ -169,13 +180,48 @@
                             </div>
                          </div>
                     </div>
-                    <p class="text-center text-xs text-slate-600 mt-3">Gideon AI, Erum AI tarafından geliştirilmiştir. Sonuçlar hatalı veya yanıltıcı olabilir.</p>
+                    <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-3">Gideon AI, Erum AI tarafından geliştirilmiştir. Sonuçlar hatalı veya yanıltıcı olabilir.</p>
                 </div>
             </footer>
         </div>
     </div>
 
     <script>
+        // === TEMA YÖNETİCİSİ ===
+        function ThemeManager() {
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const sunIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+            const moonIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    themeToggleBtn.innerHTML = sunIcon;
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    themeToggleBtn.innerHTML = moonIcon;
+                }
+            };
+
+            const toggleTheme = () => {
+                const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            };
+
+            themeToggleBtn.addEventListener('click', toggleTheme);
+
+            // Initial theme setup
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            }
+        }
+
+
         // === SUPABASE ENTEGRASYONU ===
         const SUPABASE_URL = 'https://doyqnafbcomnmykpsalo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRveXFuYWZiY29tbm15a3BzYWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDQzMzMsImV4cCI6MjA3NjIyMDMzM30.lIXvu71SOA2s1-9bu0Bn6scvXE70JTZcqD7MF_rEEt0';
@@ -991,6 +1037,7 @@
         // UYGULAMA BAŞLANGICI
         document.addEventListener('DOMContentLoaded', () => {
             initialTextareaHeight = chatInput.clientHeight;
+            ThemeManager();
             checkAuth();
             showWalkthroughIfNeeded();
 
