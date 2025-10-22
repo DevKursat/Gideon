@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "rm -rf node_modules/gh-pages/.cache && vite build && node scripts/create-404.cjs && gh-pages -d dist -b gh-pages",
+    "deploy": "vite build && cp docs/index.html docs/404.html && git add docs && git commit -m \"Deploy\" && git push",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
