@@ -1,33 +1,46 @@
+
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main # Sadece 'main' dalına push yapıldığında çalışır
+      - main # Sadece 'main' dalına yapılan push'larda tetiklenir
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest # İşin çalışacağı sanal makine
-    permissions:
-      contents: write # Action'ın gh-pages dalına push yapabilmesi için izin
-
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # Depoyu kontrol eder
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Projenizle uyumlu Node.js sürümünü kullanın
+          node-version: '18' # Projenizle uyumlu Node.js sürümü
 
       - name: Install dependencies
-        run: npm install # Bağımlılıkları yükler
+        run: npm install
 
       - name: Build project
-        run: npm run build # Vite ile projeyi derler
+        run: npm run build
 
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Derlenmiş dosyaların bulunduğu klasör
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
