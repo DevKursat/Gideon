@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../styles/prices.css'; // Yeni CSS dosyasını içe aktar
 
 // Özellikler için SVG ikonları
@@ -11,7 +11,6 @@ const CheckIcon = () => (
 
 const Prices: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  const navigate = useNavigate();
 
   return (
     <div className="prices-container">
