@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
@@ -12,7 +12,7 @@ import './index.css'
 
 function App() {
   return (
-    <BrowserRouter basename="/Gideon">
+    <HashRouter>
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
@@ -43,7 +43,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
