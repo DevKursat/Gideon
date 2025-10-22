@@ -136,10 +136,6 @@ export default function Register() {
             />
           </div>
 
-          <div style={{ fontSize: '0.8rem', color: '#a0aec0', textAlign: 'center', margin: '1rem 0' }}>
-            Kayıt olarak <Link to="/terms-of-service" className="auth-link">Kullanım Koşulları</Link>&apos;nı kabul etmiş olursunuz.
-          </div>
-
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? (
               <>
@@ -150,6 +146,10 @@ export default function Register() {
               'Kayıt Ol'
             )}
           </button>
+
+          <div style={{ fontSize: '0.75rem', color: '#a0aec0', textAlign: 'center', marginTop: '1rem' }}>
+            Kayıt olarak <Link to="/terms-of-service" className="auth-link">Kullanım Koşulları</Link>&apos;nı kabul etmiş olursunuz.
+          </div>
         </form>
 
         <div className="auth-footer">
