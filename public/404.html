@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gideon - Auth System</title>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+      // Bu betik, GitHub Pages'in SPA yönlendirme sorununu çözer.
+      // 404 sayfasına düşen bir istek olduğunda, bu betik yolu alır
+      // ve HashRouter'ın anlayacağı bir formata dönüştürerek
+      // ana sayfaya yönlendirir.
+
+      // Örneğin: https://user.github.io/repo/some/path
+      // -> https://user.github.io/repo/#/some/path
+
+      // Segment(0) 'repo' adını içerir, bu yüzden onu atlıyoruz.
+      const l = window.location;
+      const path = l.pathname.split('/').slice(2).join('/');
+      const newPath = '/' + l.pathname.split('/')[1] + '/#/' + path + l.search + l.hash;
+
+      l.replace(newPath);
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
