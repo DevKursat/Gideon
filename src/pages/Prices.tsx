@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/prices.css'; // Yeni CSS dosyasını içe aktar
 
 // Özellikler için SVG ikonları
@@ -10,11 +10,36 @@ const CheckIcon = () => (
 );
 
 const Prices: React.FC = () => {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const navigate = useNavigate();
+
   return (
     <div className="prices-container">
+      <button
+        onClick={() => window.location.href = `${import.meta.env.BASE_URL}chat.html`}
+        className="chat-redirect-btn"
+      >
+        Gideon AI Chat'e Git
+      </button>
+
       <div className="prices-header">
         <h1>Abonelik Planları</h1>
         <p>Gideon'un tüm potansiyelini ortaya çıkarın. Size en uygun planı seçin.</p>
+      </div>
+
+      <div className="billing-cycle-switch">
+        <button
+          className={billingCycle === 'monthly' ? 'active' : ''}
+          onClick={() => setBillingCycle('monthly')}
+        >
+          Aylık
+        </button>
+        <button
+          className={billingCycle === 'yearly' ? 'active' : ''}
+          onClick={() => setBillingCycle('yearly')}
+        >
+          Yıllık
+        </button>
       </div>
 
       <div className="plans-grid">
@@ -43,10 +68,17 @@ const Prices: React.FC = () => {
           <div className="plan-badge">Gideon+</div>
           <div className="plan-header">
             <h2>Premium</h2>
-            <p className="plan-price">
-              $9.99
-              <span>/ay</span>
-            </p>
+            {billingCycle === 'monthly' ? (
+              <p className="plan-price">
+                $9.99
+                <span>/ay</span>
+              </p>
+            ) : (
+              <p className="plan-price">
+                $99.99
+                <span>/yıl</span>
+              </p>
+            )}
           </div>
           <ul className="features-list">
             <li className="feature-item"><CheckIcon /> Sınırsız sohbet geçmişi</li>
@@ -58,7 +90,9 @@ const Prices: React.FC = () => {
             <li className="feature-item"><CheckIcon /> Reklamsız deneyim</li>
           </ul>
           <button className="btn-primary">Abone Ol</button>
-          <p className="plan-footnote">Yıllık abone ol, %17 tasarruf et!</p>
+          {billingCycle === 'monthly' && (
+            <p className="plan-footnote">Yıllık abone ol, %17 tasarruf et!</p>
+          )}
         </div>
       </div>
 

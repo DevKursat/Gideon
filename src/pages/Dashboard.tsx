@@ -17,19 +17,6 @@ export default function Dashboard() {
         <div className="nav-content">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <h2 className="nav-logo">Gideon</h2>
-            <button
-              onClick={() => navigate('/prices')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#a5b4fc',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                fontWeight: '500',
-              }}
-            >
-              Fiyatlandırma
-            </button>
           </div>
           <button
             onClick={handleSignOut}
@@ -81,38 +68,24 @@ export default function Dashboard() {
             {user?.user_metadata?.full_name && (
               <p className="user-name">{user.user_metadata.full_name}</p>
             )}
-            
-            <a
-              href={`${import.meta.env.BASE_URL}chat.html`}
-              className="btn-chat-redirect"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                marginTop: '1.5rem',
-                padding: '0.875rem 1.75rem',
-                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                color: 'white',
-                borderRadius: '12px',
-                fontWeight: '600',
-                textDecoration: 'none',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
-              Gideon AI Chat&apos;e Git
-            </a>
+
+            <div className="button-group">
+              <a
+                href={`${import.meta.env.BASE_URL}chat.html`}
+                className="btn-chat-redirect"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Gideon AI Chat'e Git
+              </a>
+              <button
+                onClick={() => navigate('/prices')}
+                className="btn-gideon-plus"
+              >
+                Gideon+
+              </button>
+            </div>
           </div>
 
           <div className="info-grid">
