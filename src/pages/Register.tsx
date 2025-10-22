@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import '../styles/auth.css'
 
@@ -12,6 +12,7 @@ export default function Register() {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const { signUp } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,9 +51,9 @@ export default function Register() {
         setError(error.message)
       } else {
         setSuccess(true)
-          setTimeout(() => {
-            window.location.href = (import.meta as any).env?.BASE_URL + 'chat.html'
-          }, 2000)
+        setTimeout(() => {
+          navigate('/dashboard')
+        }, 800)
       }
     } catch (err) {
       setError('Kayıt olurken bir hata oluştu')
