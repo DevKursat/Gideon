@@ -29,7 +29,8 @@ export default function Login() {
       } else {
         window.location.href = '/chat.html'
       }
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
       setError('Giriş yapılırken bir hata oluştu')
     } finally {
       setLoading(false)

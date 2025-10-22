@@ -19,7 +19,7 @@
     <style>
         html, body { height: 100%; overflow: hidden; }
         body { font-family: 'Inter', sans-serif; background-color: #020617; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-        
+
         .chat-container::-webkit-scrollbar, #history-list::-webkit-scrollbar { width: 6px; }
         .chat-container::-webkit-scrollbar-track, #history-list::-webkit-scrollbar-track { background: transparent; }
         .chat-container::-webkit-scrollbar-thumb, #history-list::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
@@ -28,20 +28,20 @@
         .typing-indicator span:nth-of-type(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-of-type(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-        
+
         .prose pre { position: relative; background-color: #1e293b !important; padding: 1.5rem 1rem 1rem 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.9em; }
         .prose pre code { background-color: transparent !important; color: #ccc; }
         .prose code:not(pre *) { background-color: #1e293b; color: #e2e8f0; padding: 0.2em 0.4em; border-radius: 4px; font-size: 90%; }
         .copy-code-btn { position: absolute; top: 0.5rem; right: 0.5rem; background-color: #334155; color: #cbd5e1; border: none; padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.375rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; }
         .prose pre:hover .copy-code-btn { opacity: 1; }
-        
+
         .suggestion-card { transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; border: 1px solid #1e293b; }
         .suggestion-card:hover { background-color: #1e293b; transform: translateY(-3px); }
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
+
         #send-button:disabled { background-image: none; background-color: #475569; cursor: not-allowed; opacity: 0.5; box-shadow: none; transform: none; }
-        
+
         /* === CHAT GEÇMİŞİ SIDEBAR STİLLERİ === */
         #history-sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; background-color: #0f172a; border-right: 1px solid #1e293b; transform: translateX(-100%); transition: transform 0.3s ease-in-out; z-index: 40; display: flex; flex-direction: column; }
         #history-sidebar.open { transform: translateX(0); }
@@ -58,7 +58,7 @@
     /* Add subtle vertical spacing between consecutive pinned conversations */
     .history-item.pinned + .history-item.pinned { margin-top: 0.4rem; }
         .pin-icon.pinned { color: #6366f1; }
-        
+
         #app-container { transition: margin-left 0.3s ease-in-out; }
         @media (min-width: 1024px) { #app-container.sidebar-open { margin-left: 280px; } }
 
@@ -66,15 +66,15 @@
         #image-preview-container { position: absolute; bottom: 100%; left: 10px; margin-bottom: 8px; background-color: #1e293b; padding: 8px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.3); animation: fadeIn 0.3s ease-out; }
         #image-preview { max-width: 80px; max-height: 80px; border-radius: 8px; }
         #remove-image-btn { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; background-color: #475569; color: #e2e8f0; border-radius: 50%; border: 2px solid #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
-        
+
         .chat-input-container { background: linear-gradient(to right, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6)); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.7); transition: all 0.3s ease-in-out; }
         .chat-input-container:focus-within { border-color: rgba(129, 140, 248, 0.7); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
-        
+
         .action-button { position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: #94a3b8; background-color: transparent; transition: all 0.2s; }
-        .action-button:hover { background-color: rgba(71, 85, 105, 0.4); color: #c7d2fe; transform: scale(1.1); }
+        .action-button:hover:not(:disabled) { background-color: rgba(71, 85, 105, 0.4); color: #c7d2fe; transform: scale(1.1); }
         .action-button .tooltip { position: absolute; bottom: 120%; white-space: nowrap; background-color: #0f172a; color: #e2e8f0; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 7px; border: 1px solid #334155; opacity: 0; visibility: hidden; transform: translateY(5px); transition: all 0.3s ease; pointer-events: none; }
         .action-button:hover .tooltip { opacity: 1; visibility: visible; transform: translateY(0); }
-        
+
         .chat-input-container.multiline { flex-direction: column; align-items: flex-end; padding: 12px; }
         .chat-input-container.multiline textarea { align-self: stretch; margin-bottom: 8px; }
 
@@ -115,7 +115,7 @@
                      <a id="header-auth-link" href="/login" class="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors">Giriş Yap</a>
                 </div>
             </header>
-            
+
             <main id="content-area" class="flex-grow min-h-0 flex flex-col">
                 <div id="welcome-screen" class="flex-grow flex flex-col justify-center items-center p-4">
                     <div class="text-center">
@@ -132,7 +132,7 @@
                     <div id="message-container" class="p-4 flex flex-col space-y-6"></div>
                 </div>
             </main>
-            
+
             <footer class="flex-shrink-0 p-4 sm:pb-6 sm:px-6 mt-4">
                 <div class="w-full">
                     <div class="relative">
@@ -140,11 +140,15 @@
                              <img id="image-preview" src="" alt="Seçilen resim önizlemesi" />
                              <button id="remove-image-btn" title="Resmi kaldır">&times;</button>
                          </div>
-                        
+
                          <div class="chat-input-container flex items-end w-full rounded-2xl p-2 gap-2">
                             <textarea id="chat-input" placeholder="Gideon AI'a bir soru sorun..." class="flex-grow w-full max-h-48 bg-transparent pl-2 self-center border-none focus:ring-0 text-slate-200 placeholder-slate-500 text-base resize-none" rows="1"></textarea>
-                            
+
                             <div class="button-group-container flex-shrink-0 flex items-center gap-1">
+                                <button id="file-upload-button" class="action-button">
+                                    <svg id="file-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                    <span class="tooltip">Dosya Ekle (Premium)</span>
+                                </button>
                                 <label for="image-upload-input" class="action-button cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                                     <span class="tooltip">Resim Ekle</span>
@@ -155,7 +159,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                                      <span class="tooltip">Derin Araştırma</span>
                                 </button>
-                                
+
                                 <button id="send-button" class="group h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out active:scale-95 w-9">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                                     <span class="send-button-text">Gönder</span>
@@ -198,6 +202,7 @@
         const sendButton = document.getElementById('send-button');
         const deepResearchToggle = document.getElementById('deep-research-toggle');
         const imageUploadInput = document.getElementById('image-upload-input');
+        const fileUploadButton = document.getElementById('file-upload-button');
         const imagePreviewContainer = document.getElementById('image-preview-container');
         const imagePreview = document.getElementById('image-preview');
         const removeImageBtn = document.getElementById('remove-image-btn');
@@ -212,6 +217,8 @@
         let currentUser = null;
         let isGuest = true;
         let guestMessageCount = 0;
+        let userPlan = 'free'; // Default plan
+        let deepResearchUsage = { count: 0, resetDate: new Date().toISOString() };
 
         // === AUTH FLOW & UI UPDATES ===
         async function checkAuth() {
@@ -221,10 +228,36 @@
                 setupGuestSession();
                 return;
             }
-            
+
             if (session && session.user) {
                 currentUser = session.user;
                 isGuest = false;
+
+                const { data: profile, error: profileError } = await supabaseClient
+                    .from('profiles')
+                    .select('plan')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (profileError) {
+                    console.error('Error fetching profile:', profileError);
+                    userPlan = 'free';
+                } else {
+                    userPlan = profile.plan || 'free';
+                }
+
+                if (userPlan === 'free') {
+                    const storedUsage = JSON.parse(localStorage.getItem('gideon-deep-research-usage'));
+                    const now = new Date();
+                    if (storedUsage && new Date(storedUsage.resetDate) > now) {
+                        deepResearchUsage = storedUsage;
+                    } else {
+                        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                        deepResearchUsage = { count: 0, resetDate: nextMonth.toISOString() };
+                        localStorage.setItem('gideon-deep-research-usage', JSON.stringify(deepResearchUsage));
+                    }
+                }
+
                 await updateUIForAuthState(true, currentUser);
                 await loadConversations();
             } else {
@@ -235,72 +268,118 @@
         function setupGuestSession() {
             currentUser = null;
             isGuest = true;
+            userPlan = 'free';
             guestMessageCount = parseInt(localStorage.getItem('gideon-guest-msg-count') || '0');
             updateUIForAuthState(false);
             updateSendButtonState();
         }
 
+        function updateDeepResearchTooltip() {
+            const tooltip = deepResearchToggle.querySelector('.tooltip');
+            if (userPlan === 'free') {
+                tooltip.textContent = `Derin Araştırma (${deepResearchUsage.count}/15)`;
+            } else {
+                tooltip.textContent = 'Derin Araştırma';
+            }
+        }
+
         async function updateUIForAuthState(isLoggedIn, user) {
             const headerAuthLink = document.getElementById('header-auth-link');
             const chatInput = document.getElementById('chat-input');
-            
-            // Önce mevcut overlay'i kaldırmayı dene
+            const fileUploadIcon = document.getElementById('file-upload-icon');
+
             const existingOverlay = document.getElementById('auth-overlay');
             if (existingOverlay) existingOverlay.remove();
-            
+
             chatInput.disabled = false;
             chatInput.placeholder = "Gideon AI'a bir soru sorun...";
 
             if (isLoggedIn) {
-                // Header'daki linki Dashboard'a yönlendir
-                headerAuthLink.innerHTML = `
-                    <div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg">
-                        <img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full">
-                        <span class="text-sm font-medium text-slate-300">${user.email}</span>
-                    </div>
-                `;
+                headerAuthLink.innerHTML = `<div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg"><img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full"><span class="text-sm font-medium text-slate-300">${user.email}</span></div>`;
                 headerAuthLink.href = '/dashboard';
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Geçmiş yükleniyor...</div>';
             } else {
-                // Header'daki linki Giriş Yap'a yönlendir
                 headerAuthLink.textContent = 'Giriş Yap';
                 headerAuthLink.href = '/login';
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Sohbet geçmişi için giriş yapın.</div>';
-                checkGuestMessageLimit(); 
+                checkGuestMessageLimit();
+            }
+
+            // Update file upload icon based on plan
+            if (userPlan !== 'premium') {
+                fileUploadButton.style.color = '#475569'; // locked color
+                fileUploadButton.disabled = true;
+                fileUploadIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>';
+            } else {
+                fileUploadButton.style.color = '#94a3b8'; // default color
+                fileUploadButton.disabled = false;
+                fileUploadIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>';
             }
             updateSendButtonState();
+            updateDeepResearchTooltip();
         }
 
         function showLoginPrompt() {
             const contentArea = document.getElementById('content-area');
-            // Zaten bir overlay varsa ekleme
             if (document.getElementById('auth-overlay')) return;
 
             const overlay = document.createElement('div');
             overlay.id = 'auth-overlay';
             overlay.className = 'absolute inset-0 bg-slate-900/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-center p-4';
-            overlay.innerHTML = `
-                <h3 class="text-2xl font-bold text-white mb-2">Devam Etmek İçin Giriş Yapın</h3>
-                <p class="text-slate-400 mb-6">Ücretsiz deneme hakkınız sona erdi. Sohbetlerinizi kaydetmek ve sınırsız devam etmek için lütfen giriş yapın.</p>
-                <a href="/login" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-lg transition-colors">
-                    Giriş Yap
-                </a>
-            `;
+            overlay.innerHTML = `<h3 class="text-2xl font-bold text-white mb-2">Devam Etmek İçin Giriş Yapın</h3><p class="text-slate-400 mb-6">Ücretsiz deneme hakkınız sona erdi. Sohbetlerinizi kaydetmek ve sınırsız devam etmek için lütfen giriş yapın.</p><a href="/login" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-lg transition-colors">Giriş Yap</a>`;
             contentArea.style.position = 'relative';
             contentArea.appendChild(overlay);
-            
+
             const chatInput = document.getElementById('chat-input');
             chatInput.disabled = true;
             chatInput.placeholder = "Devam etmek için lütfen giriş yapın...";
             updateSendButtonState();
         }
 
+        function showUpgradeModal(featureName) {
+            const existingModal = document.getElementById('upgrade-modal');
+            if(existingModal) return;
+
+            const modal = document.createElement('div');
+            modal.id = 'upgrade-modal';
+            modal.className = 'fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 fade-in';
+            modal.style.backdropFilter = 'blur(5px)';
+
+            modal.innerHTML = `
+                <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl w-full max-w-md text-center">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 mb-6">
+                        <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-3">Premium Özellik</h2>
+                    <p class="text-gray-400 mb-8">
+                        <strong>'${featureName}'</strong> özelliğini kullanabilmek için Gideon+ abonesi olmanız gerekmektedir.
+                    </p>
+                    <a href="/prices" class="w-full inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg">
+                        Gideon+ Planlarını İncele
+                    </a>
+                    <button id="close-upgrade-modal" class="w-full mt-4 text-gray-400 hover:text-white">Belki Sonra</button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            const closeModal = () => {
+                modal.remove();
+            };
+
+            modal.addEventListener('click', closeModal);
+            document.getElementById('close-upgrade-modal').addEventListener('click', closeModal);
+            modal.querySelector('.bg-gray-800').addEventListener('click', (e) => e.stopPropagation());
+        }
+
         function checkGuestMessageLimit() {
             if (isGuest && guestMessageCount >= 5) {
                 showLoginPrompt();
-                return true; // Limit aşıldı
+                return true;
             }
-            return false; // Limit aşılmadı
+            return false;
         }
 
         function closeSidebar() {
@@ -322,12 +401,21 @@
             }
         });
 
+        fileUploadButton.addEventListener('click', () => {
+            if (userPlan !== 'premium') {
+                showUpgradeModal('Çoklu Dosya Yükleme');
+            } else {
+                // Premium file upload logic here
+                alert('Premium dosya yükleme özelliği yakında!');
+            }
+        });
+
         newChatBtn.addEventListener('click', startNewChat);
         sendButton.addEventListener('click', sendMessage);
         chatInput.addEventListener('keydown', (e) => (e.key === 'Enter' && !e.shiftKey) && (e.preventDefault(), sendMessage()));
         imageUploadInput.addEventListener('change', handleImageSelection);
         removeImageBtn.addEventListener('click', removeImage);
-        
+
         chatInput.addEventListener('input', () => {
             chatInput.style.height = 'auto';
             let scrollHeight = chatInput.scrollHeight;
@@ -342,7 +430,7 @@
                 chatInputContainer.classList.remove('multiline');
             }
         });
-        
+
         // === FONKSİYONLAR ===
 
         function startNewChat(keepSidebarOpen = false) {
@@ -359,8 +447,6 @@
             chatInput.value = '';
             chatInput.dispatchEvent(new Event('input'));
             removeImage();
-            // Misafir kullanıcı yeni sohbete başladığında mesaj sayısını sıfırlamıyoruz,
-            // çünkü limit global bir limittir.
         }
 
         async function loadConversations() {
@@ -368,20 +454,22 @@
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Sohbet geçmişi için giriş yapın.</div>';
                 return;
             }
-            // Sabitleme özelliği için is_pinned sütununu da çekiyoruz.
-            const { data, error } = await supabaseClient.from('conversations').select('id, title, created_at, is_pinned').eq('user_id', currentUser.id).order('is_pinned', { ascending: false }).order('created_at', { ascending: false });
-            
-            if (error) { 
-                console.error('Sohbet geçmişi yüklenemedi:', error); 
-                // is_pinned sütunu yoksa kullanıcıyı bilgilendir
-                if (error.code === '42703') { // "column does not exist"
-                     historyList.innerHTML = '<div class="text-center text-red-400 text-sm p-4">Veritabanı hatası: `is_pinned` sütunu bulunamadı. Lütfen Supabase tablonuzu kontrol edin.</div>';
-                } else {
-                     historyList.innerHTML = '<div class="text-center text-red-400 text-sm p-4">Geçmiş yüklenemedi.</div>';
-                }
-                return; 
+
+            let query = supabaseClient.from('conversations').select('id, title, created_at, is_pinned').eq('user_id', currentUser.id).order('is_pinned', { ascending: false }).order('created_at', { ascending: false });
+
+            // Apply limit for free users
+            if (userPlan === 'free') {
+                query = query.limit(10);
             }
-            
+
+            const { data, error } = await query;
+
+            if (error) {
+                console.error('Sohbet geçmişi yüklenemedi:', error);
+                historyList.innerHTML = `<div class="text-center text-red-400 text-sm p-4">Geçmiş yüklenemedi.</div>`;
+                return;
+            }
+
             historyList.innerHTML = '';
             if (data.length === 0) {
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Henüz bir sohbetiniz yok.</div>';
@@ -402,21 +490,18 @@
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'history-item-actions';
 
-                // Pin Button
                 const pinBtn = document.createElement('button');
                 pinBtn.className = 'history-action-btn';
                 pinBtn.innerHTML = `<svg class="w-4 h-4 pin-icon ${conv.is_pinned ? 'pinned' : ''}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3.5C16.5 2.67157 15.8284 2 15 2H9C8.17157 2 7.5 2.67157 7.5 3.5V9.37868L6.28033 10.5983C5.69457 11.1841 6.13749 12.2071 7 12.2071H17C17.8625 12.2071 18.3054 11.1841 17.7197 10.5983L16.5 9.37868V3.5ZM9.5 4V9.79289L10.6464 10.9393C10.8417 11.1346 11.1583 11.1346 11.3536 10.9393L12.5 9.79289V4H9.5Z M5 14V15C5 15.5523 5.44772 16 6 16H18C18.5523 16 19 15.5523 19 15V14H5Z M12 22L14 18H10L12 22Z"/></svg>`;
-                pinBtn.onclick = (e) => { e.stopPropagation(); togglePinConversation(conv.id, !conv.is_pinned); };
+                pinBtn.onclick = (e) => { e.stopPropagation(); togglePinConversation(conv.id, !conv.is_pinned, data); };
                 actionsDiv.appendChild(pinBtn);
 
-                // Edit Button
                 const editBtn = document.createElement('button');
                 editBtn.className = 'history-action-btn';
                 editBtn.innerHTML = '<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>';
                 editBtn.onclick = (e) => { e.stopPropagation(); enableEditing(item, titleSpan, conv.id); };
                 actionsDiv.appendChild(editBtn);
 
-                // Delete Button
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'history-action-btn';
                 deleteBtn.innerHTML = '<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>';
@@ -426,7 +511,6 @@
                 item.appendChild(actionsDiv);
                 historyList.appendChild(item);
             });
-             // Aktif sohbeti tekrar işaretle
             if (currentConversationId) {
                 const activeItem = document.querySelector(`.history-item[data-id="${currentConversationId}"]`);
                 if (activeItem) activeItem.classList.add('active');
@@ -451,7 +535,6 @@
                 if (newTitle && newTitle !== currentTitle) {
                     await renameConversation(id, newTitle);
                 }
-                // Düzenleme modundan çık
                 if (input.parentNode) {
                     input.remove();
                 }
@@ -478,19 +561,24 @@
             if (error) console.error('Sohbet yeniden adlandırılamadı:', error);
         }
 
-        async function togglePinConversation(id, shouldPin) {
+        async function togglePinConversation(id, shouldPin, conversations) {
+            const pinnedCount = conversations.filter(c => c.is_pinned).length;
+            if (userPlan === 'free' && shouldPin && pinnedCount >= 1) {
+                showUpgradeModal('Birden fazla sohbet sabitleme');
+                return;
+            }
+
             const { error } = await supabaseClient.from('conversations').update({ is_pinned: shouldPin }).eq('id', id);
             if (error) {
                 console.error('Sabitleme durumu güncellenemedi:', error);
             } else {
-                await loadConversations(); // Listeyi yeniden yükle
+                await loadConversations();
             }
         }
 
         async function deleteConversation(id) {
             if (!confirm('Bu sohbeti kalıcı olarak silmek istediğinizden emin misiniz?')) return;
 
-            // Önce ilişkili mesajları sil
             const { error: msgError } = await supabaseClient.from('messages').delete().eq('conversation_id', id);
             if (msgError) {
                 console.error('Sohbet mesajları silinemedi:', msgError);
@@ -498,22 +586,19 @@
                 return;
             }
 
-            // Sonra sohbetin kendisini sil
             const { error: convError } = await supabaseClient.from('conversations').delete().eq('id', id);
             if (convError) {
                 console.error('Sohbet silinemedi:', convError);
                 alert('Hata: Sohbet silinemedi.');
             } else {
-                // Eğer silinen sohbet aktif sohbet ise, yeni sohbet başlat
                 if (currentConversationId === id) {
                     startNewChat();
                 }
-                await loadConversations(); // Listeyi yenile
+                await loadConversations();
             }
         }
-        
+
         async function loadConversation(id) {
-            // ID Doğrulaması: Geçersiz ID'lerle sorgu yapılmasını engelle
             if (!id || typeof id !== 'string') {
                 console.error('loadConversation çağrısı geçersiz ID ile yapıldı:', id);
                 return;
@@ -523,10 +608,10 @@
             conversationHistory = [];
             messageContainer.innerHTML = '';
             currentConversationId = id;
-            
+
             welcomeScreen.style.display = 'none';
             chatWindow.classList.remove('hidden');
-            
+
             document.querySelectorAll('.history-item.active').forEach(item => item.classList.remove('active'));
             const activeItem = document.querySelector(`.history-item[data-id="${id}"]`);
             if (activeItem) activeItem.classList.add('active');
@@ -534,18 +619,17 @@
             messageContainer.innerHTML = '<div class="text-center text-slate-400 p-4">Sohbet yükleniyor...</div>';
 
             const { data, error } = await supabaseClient.from('messages').select('role, content').eq('conversation_id', id).order('created_at', { ascending: true });
-            
+
             messageContainer.innerHTML = '';
 
-            if (error) { 
-                // Hata ayıklama için daha detaylı loglama
-                console.error('Mesajlar yüklenemedi. ID:', id, 'Hata:', error); 
+            if (error) {
+                console.error('Mesajlar yüklenemedi. ID:', id, 'Hata:', error);
                 messageContainer.innerHTML = `<div class="text-center text-red-400 p-4">Mesajlar yüklenirken bir hata oluştu. Lütfen konsolu kontrol edin.</div>`;
-                return; 
+                return;
             }
-            
+
             data.forEach(msg => {
-                const content = msg.content || {}; 
+                const content = msg.content || {};
                 const text = content.text || "";
                 const imageUrl = content.imageUrl;
 
@@ -557,7 +641,7 @@
                 }
 
                 if (parts.length > 0) {
-                    conversationHistory.push({ role: msg.role, parts: parts }); 
+                    conversationHistory.push({ role: msg.role, parts: parts });
                 }
                 appendMessage(text, msg.role, false, imageUrl);
             });
@@ -578,7 +662,7 @@
 
             const userMessage = chatInput.value.trim();
             if (userMessage === '' && !selectedImageBase64) return;
-            
+
             if (welcomeScreen.style.display !== 'none') {
                 welcomeScreen.style.display = 'none';
                 chatWindow.classList.remove('hidden');
@@ -586,26 +670,23 @@
 
             appendMessage(userMessage, 'user', false, selectedImageBase64);
 
-            // Misafir kullanıcı ise mesaj sayısını artır
             if (isGuest) {
                 guestMessageCount++;
                 localStorage.setItem('gideon-guest-msg-count', guestMessageCount);
             }
 
             let tempConversationId = currentConversationId;
-            // Sadece giriş yapmış kullanıcılar için veritabanı işlemleri
             if (!isGuest && !tempConversationId) {
                 const title = userMessage.substring(0, 40) || 'Resimli Sohbet';
                 const { data, error } = await supabaseClient.from('conversations').insert({ title: title, user_id: currentUser.id }).select('id').single();
-                if (error) { 
-                    console.error('Yeni sohbet oluşturulamadı:', error); 
+                if (error) {
+                    console.error('Yeni sohbet oluşturulamadı:', error);
                     appendMessage(`**Veritabanı Hatası:** Yeni sohbet oluşturulamadı. (${error.message})`, 'ai');
-                    return; 
+                    return;
                 }
                 tempConversationId = data.id;
                 currentConversationId = data.id;
-                // Listeyi yenile ve yeni oluşturulan sohbeti aktif olarak işaretle
-                await loadConversations(); 
+                await loadConversations();
                 const newActiveItem = document.querySelector(`.history-item[data-id="${currentConversationId}"]`);
                 if (newActiveItem) newActiveItem.classList.add('active');
             }
@@ -613,11 +694,11 @@
             if (!isGuest) {
                 const userContent = { text: userMessage, imageUrl: selectedImageBase64 };
                 if (userContent.text || userContent.imageUrl) {
-                    const { error } = await supabaseClient.from('messages').insert({ 
-                        conversation_id: tempConversationId, 
-                        role: 'user', 
-                        content: userContent, 
-                        user_id: currentUser.id // user_id'nin eklendiğinden emin ol
+                    const { error } = await supabaseClient.from('messages').insert({
+                        conversation_id: tempConversationId,
+                        role: 'user',
+                        content: userContent,
+                        user_id: currentUser.id
                     });
                     if (error) console.error('Kullanıcı mesajı kaydedilemedi:', error);
                 }
@@ -632,22 +713,21 @@
             conversationHistory.push({ role: "user", parts: userParts });
 
             getAiResponse(tempConversationId);
-            
+
             chatInput.value = '';
             chatInput.dispatchEvent(new Event('input'));
             removeImage();
-            
-            // Mesaj gönderdikten sonra limiti tekrar kontrol et
+
             checkGuestMessageLimit();
         }
 
         async function getAiResponse(conversationId) {
             appendMessage('', 'ai', true);
-            
+
             const userMessage = conversationHistory.filter(c => c.role === 'user').pop().parts.map(p => p.text).join(' ');
 
             const systemInstructionText = "Senin adın Gideon AI. 'seni kim yaptı', 'geliştiricin kim', 'kime aitsin' gibi sorulara her zaman 'Ben Erum AI tarafından geliştirilen bir yapay zeka modeliyim.' diye cevap ver. Diğer tüm konularda yardımcı ve profesyonel bir asistansın.";
-            
+
             const payload = {
                 contents: conversationHistory,
                 systemInstruction: { parts: [{ text: systemInstructionText }] }
@@ -656,9 +736,22 @@
             const researchKeywords = ['kimdir', 'nedir', 'nasıl yapılır', 'nerede', 'ne kadar', 'hangi', 'kaç', 'ne zaman', 'özeti', 'hakkında bilgi', 'fiyatı', 'son durum'];
             const lowerCaseMessage = userMessage.toLowerCase();
             const autoEnableResearch = researchKeywords.some(keyword => lowerCaseMessage.includes(keyword));
+            const shouldUseDeepResearch = isDeepResearchEnabled || autoEnableResearch;
 
-            if (isDeepResearchEnabled || autoEnableResearch) {
+            if (shouldUseDeepResearch) {
+                if (userPlan === 'free' && deepResearchUsage.count >= 15) {
+                    showUpgradeModal('Sınırsız Derin Araştırma');
+                    appendMessage("Derin Araştırma limitinize ulaştınız. Daha fazlası için Gideon+'a yükseltin.", 'ai');
+                    return;
+                }
+
                 payload.tools = [{ "google_search": {} }];
+
+                if (userPlan === 'free') {
+                    deepResearchUsage.count++;
+                    localStorage.setItem('gideon-deep-research-usage', JSON.stringify(deepResearchUsage));
+                }
+
                 if (autoEnableResearch && !isDeepResearchEnabled) {
                     const toggle = document.getElementById('deep-research-toggle');
                     if(toggle) {
@@ -667,14 +760,14 @@
                     }
                 }
             }
-            
+
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
+
                 document.getElementById('loading-indicator-wrapper')?.remove();
 
                 if (!response.ok) {
@@ -694,11 +787,11 @@
                     conversationHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
                     if (!isGuest && conversationId) {
-                        const { error } = await supabaseClient.from('messages').insert({ 
-                            conversation_id: conversationId, 
-                            role: 'model', 
-                            content: { text: aiResponseText }, 
-                            user_id: currentUser.id // user_id'nin eklendiğinden emin ol
+                        const { error } = await supabaseClient.from('messages').insert({
+                            conversation_id: conversationId,
+                            role: 'model',
+                            content: { text: aiResponseText },
+                            user_id: currentUser.id
                         });
                         if (error) console.error('AI mesajı kaydedilemedi:', error);
                     }
@@ -720,7 +813,7 @@
                 conversationHistory.pop();
             }
         }
-        
+
         function appendMessage(message, sender, isLoading = false, imageUrl = null) {
              const messageWrapper = document.createElement('div');
             messageWrapper.classList.add('w-full', 'fade-in');
@@ -729,8 +822,7 @@
                 messageWrapper.classList.add('flex', 'justify-end');
                 let imageHTML = imageUrl ? `<img src="${imageUrl}" alt="Yüklenen resim" class="mt-2 rounded-lg max-w-full h-auto" style="max-height: 200px;">` : '';
                 const messageTextHTML = message ? `<p class="text-base">${message.replace(/\n/g, '<br>')}</p>` : '';
-                
-                // Kullanıcı avatarını oluştur
+
                 const avatarURL = currentUser?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.email || 'G')}&background=random`;
                 const avatarHTML = `<div class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-semibold border-2 border-slate-600 order-2"><img src="${avatarURL}" alt="User Avatar" class="w-full h-full rounded-full"></div>`;
 
@@ -755,18 +847,18 @@
             chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
 
-        function updateSendButtonState() { 
+        function updateSendButtonState() {
             const limitReached = isGuest && guestMessageCount >= 5;
-            sendButton.disabled = (chatInput.value.trim() === '' && !selectedImageBase64) || limitReached; 
+            sendButton.disabled = (chatInput.value.trim() === '' && !selectedImageBase64) || limitReached;
         }
         function removeImage() { selectedImageBase64 = null; imagePreview.src = ''; imagePreviewContainer.classList.add('hidden'); imageUploadInput.value = ''; updateSendButtonState(); }
-        function setSuggestion(text) { 
+        function setSuggestion(text) {
             if (checkGuestMessageLimit()) return;
-            chatInput.value = text; 
-            chatInput.focus(); 
-            chatInput.dispatchEvent(new Event('input')); 
+            chatInput.value = text;
+            chatInput.focus();
+            chatInput.dispatchEvent(new Event('input'));
         }
-        function initializeCopyButtons() { 
+        function initializeCopyButtons() {
             const clipboard = new ClipboardJS('.copy-code-btn');
             clipboard.on('success', (e) => {
                 e.trigger.textContent = 'Kopyalandı!';
@@ -795,22 +887,61 @@
             reader.readAsDataURL(file);
         }
 
+        function showWalkthroughIfNeeded() {
+            if (localStorage.getItem('gideon-walkthrough-shown') === 'true') {
+                return;
+            }
+
+            const overlay = document.createElement('div');
+            overlay.id = 'walkthrough-overlay';
+            overlay.className = 'fixed inset-0 bg-black/70 z-50 flex items-start justify-start p-4';
+            overlay.style.backdropFilter = 'blur(2px)';
+
+            overlay.innerHTML = `
+                <div class="relative bg-slate-800 text-white p-5 rounded-lg max-w-sm border border-slate-700 shadow-2xl mt-16 ml-4 fade-in">
+                    <div class="absolute -top-2 left-8 w-4 h-4 bg-slate-800 transform rotate-45 border-t border-l border-slate-700"></div>
+                    <h3 class="text-lg font-bold mb-2">Sohbet Geçmişiniz Burada!</h3>
+                    <p class="text-sm text-slate-300 mb-4">
+                        Tüm geçmiş sohbetlerinize erişmek için buradaki <strong>Gideon AI</strong> logosuna tıklayabilirsiniz.
+                    </p>
+                    <button id="walkthrough-close-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                        Anladım
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+
+            document.getElementById('walkthrough-close-btn').addEventListener('click', () => {
+                overlay.style.display = 'none';
+                localStorage.setItem('gideon-walkthrough-shown', 'true');
+                document.body.removeChild(overlay);
+            });
+        }
+
         // UYGULAMA BAŞLANGICI
         document.addEventListener('DOMContentLoaded', () => {
             initialTextareaHeight = chatInput.clientHeight;
             checkAuth();
+            showWalkthroughIfNeeded();
+
+            deepResearchToggle.addEventListener('click', () => {
+                isDeepResearchEnabled = !isDeepResearchEnabled;
+                deepResearchToggle.style.color = isDeepResearchEnabled ? '#818cf8' : '#94a3b8'; // indigo-400 or slate-400
+                updateDeepResearchTooltip();
+            });
 
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN') {
                     currentUser = session.user;
                     isGuest = false;
-                    localStorage.removeItem('gideon-guest-msg-count'); // Misafir sayacını temizle
+                    localStorage.removeItem('gideon-guest-msg-count');
                     updateUIForAuthState(true, currentUser);
-                    startNewChat(); // Arayüzü temizle
-                    loadConversations(); // Yeni kullanıcının geçmişini yükle
+                    startNewChat();
+                    loadConversations();
                 } else if (event === 'SIGNED_OUT') {
                     setupGuestSession();
-                    startNewChat(); // Arayüzü temizle
+                    startNewChat();
                 }
             });
         });

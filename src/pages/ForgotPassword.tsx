@@ -30,7 +30,8 @@ export default function ForgotPassword() {
       } else {
         setSuccess(true)
       }
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
       setError('Şifre sıfırlama isteği gönderilirken bir hata oluştu')
     } finally {
       setLoading(false)
