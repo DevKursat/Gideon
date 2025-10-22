@@ -112,7 +112,7 @@
                         <svg class="w-8 h-8 text-indigo-400 group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 21v-1.5M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z"></path></svg>
                         <h1 class="text-xl font-semibold text-slate-300">Gideon AI</h1>
                      </div>
-                     <a id="header-auth-link" href="/login" class="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors">Giriş Yap</a>
+                     <a id="header-auth-link" href="./login" class="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors">Giriş Yap</a>
                 </div>
             </header>
             
@@ -259,12 +259,12 @@
                         <span class="text-sm font-medium text-slate-300">${user.email}</span>
                     </div>
                 `;
-                headerAuthLink.href = 'dashboard';
+                headerAuthLink.href = './dashboard';
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Geçmiş yükleniyor...</div>';
             } else {
                 // Header'daki linki Giriş Yap'a yönlendir
                 headerAuthLink.textContent = 'Giriş Yap';
-                headerAuthLink.href = 'login';
+                headerAuthLink.href = './login';
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Sohbet geçmişi için giriş yapın.</div>';
                 checkGuestMessageLimit(); 
             }
