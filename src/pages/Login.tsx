@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import '../styles/auth.css'
 
@@ -9,7 +9,6 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { signIn } = useAuth()
-  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,8 +27,7 @@ export default function Login() {
       if (error) {
         setError(error)
       } else {
-        // Navigate into the SPA (dashboard) instead of using chat.html
-        navigate('/dashboard')
+        window.location.href = '/chat.html'
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
