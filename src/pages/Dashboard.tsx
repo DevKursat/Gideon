@@ -15,9 +15,24 @@ export default function Dashboard() {
     <div className="dashboard-container">
       <nav className="dashboard-nav">
         <div className="nav-content">
-          <h2 className="nav-logo">Gideon</h2>
-          <button 
-            onClick={handleSignOut} 
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <h2 className="nav-logo">Gideon</h2>
+            <button
+              onClick={() => navigate('/prices')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#a5b4fc',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+              }}
+            >
+              Fiyatlandırma
+            </button>
+          </div>
+          <button
+            onClick={handleSignOut}
             className="btn-signout"
             style={{
                 display: 'inline-flex',
@@ -96,7 +111,7 @@ export default function Dashboard() {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
-              Gideon AI Chat'e Git
+              Gideon AI Chat&apos;e Git
             </a>
           </div>
 

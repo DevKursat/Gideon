@@ -65,8 +65,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       return { error: 'Kayıt işlemi başarısız oldu' }
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   }
 
@@ -86,8 +89,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       return { error: 'Giriş işlemi başarısız oldu' }
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   }
 
@@ -111,8 +117,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       return { error: null }
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   }
 
@@ -129,8 +138,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       return { error: null }
-    } catch (error: any) {
-      return { error: error.message || 'Beklenmeyen bir hata oluştu' }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Beklenmeyen bir hata oluştu' }
     }
   }
 

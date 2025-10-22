@@ -46,7 +46,8 @@ export default function Register() {
           window.location.href = '/chat.html'
         }, 2000)
       }
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
       setError('Kayıt olurken bir hata oluştu')
     } finally {
       setLoading(false)
@@ -58,7 +59,7 @@ export default function Register() {
       <div className="auth-card">
         <div className="auth-header">
           <h1>Hesap Oluştur</h1>
-          <p>Gideon'a katılın</p>
+          <p>Gideon&apos;a katılın</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -133,6 +134,10 @@ export default function Register() {
               disabled={loading}
               autoComplete="new-password"
             />
+          </div>
+
+          <div style={{ fontSize: '0.8rem', color: '#a0aec0', textAlign: 'center', margin: '1rem 0' }}>
+            Kayıt olarak <Link to="/terms-of-service" className="auth-link">Kullanım Koşulları</Link>&apos;nı kabul etmiş olursunuz.
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
