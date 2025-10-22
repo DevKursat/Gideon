@@ -146,7 +146,7 @@
 
                             <div class="button-group-container flex-shrink-0 flex items-center gap-1">
                                 <button id="file-upload-button" class="action-button">
-                                    <svg id="file-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                    <svg id="file-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"></path><path d="M2 9h20"></path></svg>
                                     <span class="tooltip">Dosya Ekle (Premium)</span>
                                 </button>
                                 <label for="image-upload-input" class="action-button cursor-pointer">
@@ -307,13 +307,13 @@
 
             // Update file upload icon based on plan
             if (userPlan !== 'premium') {
-                fileUploadButton.style.color = '#475569'; // locked color
-                fileUploadButton.disabled = true;
-                fileUploadIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>';
+                fileUploadButton.style.color = '#64748b'; // Kilitli rengi (slate-500)
+                fileUploadButton.disabled = false; // Tıklanabilir olmalı ki modal açılsın
+                fileUploadIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'; // Kilit ikonu
             } else {
-                fileUploadButton.style.color = '#94a3b8'; // default color
+                fileUploadButton.style.color = '#94a3b8'; // Varsayılan renk (slate-400)
                 fileUploadButton.disabled = false;
-                fileUploadIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>';
+                fileUploadIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"></path><path d="M2 9h20"></path></svg>'; // Mücevher ikonu
             }
             updateSendButtonState();
             updateDeepResearchTooltip();
@@ -403,7 +403,7 @@
 
         fileUploadButton.addEventListener('click', () => {
             if (userPlan !== 'premium') {
-                showUpgradeModal('Çoklu Dosya Yükleme');
+                showUpgradeModal('Premium Dosya Yükleme');
             } else {
                 // Premium file upload logic here
                 alert('Premium dosya yükleme özelliği yakında!');
