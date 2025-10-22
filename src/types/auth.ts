@@ -19,9 +19,13 @@ export interface AuthResponse {
 }
 
 export interface SignUpCredentials {
-  email: string
-  password: string
-  fullName?: string
+  email: string;
+  password: string;
+  options?: {
+    data?: {
+      [key: string]: any;
+    };
+  };
 }
 
 export interface SignInCredentials {

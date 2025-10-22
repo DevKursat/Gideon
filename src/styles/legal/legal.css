@@ -1,0 +1,69 @@
+.legal-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px 20px;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.legal-card {
+  background-color: #252525;
+  border: 1px solid #444;
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.legal-card h1 {
+  font-size: 2.5rem;
+  color: #00aaff;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #00aaff;
+  padding-bottom: 10px;
+}
+
+.legal-card h2 {
+  font-size: 1.8rem;
+  color: #00aaff;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.legal-card p, .legal-card li {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #ccc;
+}
+
+.legal-card ul {
+    padding-left: 20px;
+}
+
+.legal-card a {
+  color: #00aaff;
+  text-decoration: none;
+}
+
+.legal-card a:hover {
+  text-decoration: underline;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 12px 25px;
+    background-color: #00aaff;
+    color: #fff !important;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #0088cc;
+    text-decoration: none !important;
+}
