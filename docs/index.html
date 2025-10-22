@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gideon - Auth System</title>
+    <script>
+      (function(){
+        try {
+          const params = new URLSearchParams(location.search);
+          const redirect = params.get('redirect');
+          if (redirect) {
+            // Replace the URL with the original path before the React app mounts
+            history.replaceState(null, '', redirect);
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/Gideon/assets/index-DNv1yPUu.js"></script>
+    <link rel="stylesheet" crossorigin href="/Gideon/assets/index-DnKRADKg.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
