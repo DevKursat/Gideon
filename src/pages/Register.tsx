@@ -43,7 +43,7 @@ export default function Register() {
       } else {
         setSuccess(true)
         setTimeout(() => {
-          window.location.href = '/chat.html'
+          window.location.href = `${import.meta.env.BASE_URL}chat.html`
         }, 2000)
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
