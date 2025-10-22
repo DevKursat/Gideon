@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
-  const [email, setEmail] = useState(user?.email || '');
+  const email = user?.email || '';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -105,58 +105,6 @@ export default function Dashboard() {
               </svg>
               Gideon AI Chat'e Git
             </a>
-          </div>
-
-          <div className="info-grid">
-// ... existing code ...
-            {isEditing ? (
-              <form onSubmit={handleUpdate}>
-                <div className="user-info-grid">
-                  <div className="user-info-item">
-                    <label htmlFor="fullName">Ad Soyad</label>
-                    <input id="fullName" type="text" value={fullName} onChange={e => setFullName(e.target.value)} disabled={loading} />
-                  </div>
-                  <div className="user-info-item">
-                    <label htmlFor="email">E-posta</label>
-                    <input id="email" type="email" value={email} readOnly disabled />
-                    <small style={{ color: '#9ca3af', marginTop: '5px', display: 'block' }}>E-posta adresi güvenlik nedeniyle değiştirilemez.</small>
-                  </div>
-                </div>
-                <div className="edit-actions">
-                  <button type="button" onClick={() => setIsEditing(false)} className="btn-cancel" disabled={loading}>İptal</button>
-                  <button type="submit" className="btn-save" disabled={loading}>
-                    {loading ? 'Kaydediliyor...' : 'Kaydet'}
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div className="user-info-grid">
-                <div className="user-info-item">
-                  <span className="info-label">Ad Soyad:</span>
-                  <span className="info-value">{user?.user_metadata?.full_name || 'Belirtilmemiş'}</span>
-                </div>
-                <div className="user-info-item">
-                  <span className="info-label">E-posta:</span>
-                  <span className="info-value">{user?.email}</span>
-                </div>
-                <div className="user-info-item">
-                  <span className="info-label">User ID:</span>
-                  <span className="info-value">{user?.id}</span>
-                </div>
-                {user?.created_at && (
-                  <div className="user-info-item">
-                    <span className="info-label">Kayıt Tarihi:</span>
-                    <span className="info-value">
-                      {new Date(user.created_at).toLocaleDateString('tr-TR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
           <div className="info-grid">
