@@ -15,7 +15,7 @@
 
 .prices-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   animation: slideUp 0.4s ease-out;
 }
 
@@ -33,6 +33,15 @@
   font-size: 1.1rem;
   color: #94a3b8;
   max-width: 600px;
+}
+
+.controls-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
 }
 
 .plans-grid {
@@ -186,9 +195,6 @@
 
 /* Chat'e Yönlendirme Butonu */
 .chat-redirect-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
   padding: 10px 20px;
@@ -197,6 +203,7 @@
   font-weight: 500;
   transition: background-color 0.3s;
   cursor: pointer;
+  border: none;
 }
 
 .chat-redirect-btn:hover {
@@ -207,13 +214,10 @@
 .billing-cycle-switch {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
   background-color: #2d3748;
   padding: 5px;
   border-radius: 10px;
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .billing-cycle-switch button {
