@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SubscriptionContext } from '../contexts/SubscriptionContext';
+import { useSubscription } from '../contexts/SubscriptionContext';
 
 const CheckIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
   <svg
@@ -19,8 +19,8 @@ const CheckIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
 
 const Prices: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  const { userPlan } = useContext(SubscriptionContext);
-  const isPremium = userPlan === 'premium';
+  const { plan } = useSubscription();
+  const isPremium = plan === 'premium';
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
