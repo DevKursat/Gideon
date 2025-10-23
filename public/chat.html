@@ -385,7 +385,7 @@
 
             const basePath = getBasePath().replace('chat.html', '');
             if (isLoggedIn) {
-                headerAuthLink.innerHTML = `<div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg"><img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full"><span class="text-sm font-medium text-slate-300">${user.email}</span></div>`;
+                headerAuthLink.innerHTML = `<div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg"><img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full"><span class="text-sm font-medium text-slate-700 dark:text-slate-300">${user.email}</span></div>`;
                 headerAuthLink.href = `${basePath}#/dashboard`;
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Geçmiş yükleniyor...</div>';
             } else {
@@ -1071,6 +1071,26 @@
 
         // UYGULAMA BAŞLANGICI
         document.addEventListener('DOMContentLoaded', () => {
+            // Geliştirici konsolunu engelle
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.onkeydown = function (e) {
+                if (e.keyCode == 123) { // F12
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
+                    return false;
+                }
+                if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
+                    return false;
+                }
+            };
+
             initialTextareaHeight = chatInput.clientHeight;
             ThemeManager();
             checkAuth();
