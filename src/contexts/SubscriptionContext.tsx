@@ -9,7 +9,7 @@ interface SubscriptionContextType {
   loading: boolean;
 }
 
-const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
+export const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
 
 export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
