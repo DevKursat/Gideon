@@ -44,12 +44,47 @@
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        #send-button:disabled { background-image: none; cursor: not-allowed; opacity: 0.5; box-shadow: none; transform: none; }
+        #send-button:disabled {
+            background-image: none;
+            background-color: #e2e8f0; /* slate-200 */
+            color: #94a3b8; /* slate-400 */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .dark #send-button:disabled {
+            background-color: #334155; /* slate-700 */
+            color: #64748b; /* slate-500 */
+        }
 
         /* === CHAT GEÇMİŞİ SIDEBAR STİLLERİ === */
         #history-sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; transform: translateX(-100%); transition: transform 0.3s ease-in-out; z-index: 40; display: flex; flex-direction: column; }
         #history-sidebar.open { transform: translateX(0); }
         .history-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background-color 0.2s; }
+
+        .history-item:hover { background-color: #f1f5f9; /* slate-100 */ }
+        .dark .history-item:hover { background-color: #334155; /* slate-700 */ }
+        .history-item.active {
+            background-color: #e0e7ff; /* indigo-100 */
+            color: #3730a3; /* indigo-800 */
+            font-weight: 600;
+        }
+        .dark .history-item.active {
+            background-color: #3730a3; /* indigo-800 */
+            color: #e0e7ff; /* indigo-100 */
+        }
+        .history-item.pinned {
+            background-color: #f5f3ff; /* violet-50 */
+        }
+        .dark .history-item.pinned {
+            background-color: #312e81; /* indigo-900 */
+        }
+        .history-item.pinned:hover {
+             background-color: #ede9fe; /* violet-100 */
+        }
+        .dark .history-item.pinned:hover {
+            background-color: #3730a3; /* indigo-800 */
+        }
 
         .history-item-title { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; }
         .history-item-actions { display: none; align-items: center; gap: 4px; padding-left: 8px; }
@@ -107,7 +142,7 @@
 
     <div id="app-container">
         <div class="flex flex-col h-screen w-full max-w-4xl mx-auto">
-            <header class="flex-shrink-0 p-4 border-b bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+            <header class="flex-shrink-0 p-4 border-b border-slate-200 dark:border-slate-700">
                  <div class="flex items-center justify-between">
                      <div id="logo-container" class="flex items-center gap-x-3 cursor-pointer group">
                         <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 21v-1.5M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z"></path></svg>
@@ -152,7 +187,9 @@
 
                             <div class="button-group-container flex-shrink-0 flex items-center gap-1">
                                 <button id="file-upload-button" class="action-button text-slate-500 dark:text-slate-400">
-                                    <svg id="file-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"></path><path d="M2 9h20"></path></svg>
+                                    <svg id="file-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                                    </svg>
                                     <span class="tooltip">Dosya Ekle (Premium)</span>
                                 </button>
                                 <label for="image-upload-input" class="action-button cursor-pointer text-slate-500 dark:text-slate-400">
@@ -166,7 +203,7 @@
                                      <span class="tooltip">Derin Araştırma</span>
                                 </button>
 
-                                <button id="send-button" class="group h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out active:scale-95 w-9">
+                                <button id="send-button" class="group h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out active:scale-95 w-9 disabled:opacity-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                                     <span class="send-button-text">Gönder</span>
                                 </button>
