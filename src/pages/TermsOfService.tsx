@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const TermsOfService: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-8 sm:p-12">
       <div className="w-full max-w-4xl bg-gray-800 rounded-lg p-8 sm:p-10 border border-gray-700">
@@ -44,9 +46,9 @@ const TermsOfService: React.FC = () => {
           </p>
         </div>
       </div>
-      <Link to="/register" className="mt-8 text-purple-400 hover:text-purple-300 underline">
-        Kayıt Sayfasına Geri Dön
-      </Link>
+      <button onClick={() => navigate(-1)} className="mt-8 text-purple-400 hover:text-purple-300 underline">
+        Geri Dön
+      </button>
     </div>
   );
 };
