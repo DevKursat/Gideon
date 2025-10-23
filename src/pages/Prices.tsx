@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { SubscriptionContext } from '../contexts/SubscriptionContext';
 
 const CheckIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
   <svg
@@ -18,6 +19,8 @@ const CheckIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
 
 const Prices: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const { userPlan } = useContext(SubscriptionContext);
+  const isPremium = userPlan === 'premium';
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -105,10 +108,16 @@ const Prices: React.FC = () => {
             <li className="flex items-center gap-3"><CheckIcon /> Öncelikli destek</li>
             <li className="flex items-center gap-3"><CheckIcon /> Reklamsız deneyim</li>
           </ul>
-          <button className="mt-8 w-full py-3 px-6 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition-opacity">
-            Abone Ol
-          </button>
-          {billingCycle === 'yearly' && (
+          {isPremium ? (
+            <div className="mt-8 w-full py-3 px-6 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-center">
+              Gideon+ kullanıyorsunuz
+            </div>
+          ) : (
+            <button className="mt-8 w-full py-3 px-6 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition-opacity">
+              Abone Ol
+            </button>
+          )}
+          {billingCycle === 'yearly' && !isPremium && (
             <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
               Aylık plana göre %17 tasarruf edin!
             </p>
