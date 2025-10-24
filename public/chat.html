@@ -159,7 +159,7 @@
 
             <main id="content-area" class="flex-grow min-h-0 flex flex-col">
                 <div id="welcome-screen" class="flex-grow flex flex-col justify-center items-center p-4 overflow-y-auto">
-                    <div class="text-center flex-shrink-0">
+                    <div class="text-center flex-shrink-0 mt-8 sm:mt-0">
                         <h2 class="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 text-transparent bg-clip-text mb-4">Size nasıl yardımcı olabilirim?</h2>
                     </div>
                     <div class="suggestions-container flex flex-col gap-4 mt-8 w-full max-w-2xl pb-4 sm:grid sm:grid-cols-2">
@@ -174,7 +174,7 @@
                 </div>
             </main>
 
-            <footer class="flex-shrink-0 p-4 sm:pb-6 sm:px-6 mt-4">
+            <footer class="flex-shrink-0 p-4 sm:pb-6 sm:px-6">
                 <div class="w-full">
                     <div class="relative">
                          <div id="image-preview-container" class="hidden">
@@ -385,9 +385,14 @@
 
             const basePath = getBasePath().replace('chat.html', '');
             if (isLoggedIn) {
-                headerAuthLink.innerHTML = `<div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg"><img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full"><span class="text-sm font-medium text-slate-700 dark:text-slate-300">${user.email}</span></div>`;
+                headerAuthLink.innerHTML = `<div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg"><img src="${user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=random`}" alt="Avatar" class="w-6 h-6 rounded-full"><span class="text-sm font-medium text-slate-700 dark:text-slate-300">Dashboard</span></div>`;
                 headerAuthLink.href = `${basePath}#/dashboard`;
                 historyList.innerHTML = '<div class="text-center text-slate-500 text-sm p-4">Geçmiş yükleniyor...</div>';
+
+                const welcomeHeader = document.querySelector('#welcome-screen h2');
+                const userName = user.user_metadata.full_name || user.email.split('@')[0];
+                welcomeHeader.textContent = `Merhaba ${userName}, sana nasıl yardımcı olabilirim?`;
+
             } else {
                 headerAuthLink.textContent = 'Giriş Yap';
                 headerAuthLink.href = `${basePath}#/login`;
