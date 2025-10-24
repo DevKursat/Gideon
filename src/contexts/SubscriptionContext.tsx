@@ -29,15 +29,16 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
         const { data, error } = await supabase
           .from('profiles')
           .select('plan')
-          .eq('id', user.id)
-          .single();
+          .eq('id', user.id);
 
         if (error) {
           throw error;
         }
 
-        if (data) {
-          setPlan(data.plan as Plan);
+        if (data && data.length > 0) {
+          setPlan(data[0].plan as Plan);
+        } else {
+          setPlan(null); // Explicitly set to null if no profile is found
         }
       } catch (error) {
         console.error('Error fetching user profile:', error);
