@@ -140,8 +140,8 @@
         <div id="history-list" class="flex-grow p-2 overflow-y-auto"></div>
     </aside>
 
-    <div id="app-container">
-        <div class="flex flex-col h-screen w-full max-w-4xl mx-auto">
+    <div id="app-container" class="h-full">
+        <div class="flex flex-col h-full w-full max-w-4xl mx-auto">
             <header class="flex-shrink-0 p-4 border-b border-slate-200 dark:border-slate-700">
                  <div class="flex items-center justify-between">
                      <div id="logo-container" class="flex items-center gap-x-3 cursor-pointer group">
@@ -253,8 +253,8 @@
 
 
         // === SUPABASE ENTEGRASYONU ===
-        const SUPABASE_URL = 'https://doyqnafbcomnmykpsalo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRveXFuYWZiY29tbm15a3BzYWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDQzMzMsImV4cCI6MjA3NjIyMDMzM30.lIXvu71SOA2s1-9bu0Bn6scvXE70JTZcqD7MF_rEEt0';
+        const SUPABASE_URL = '__SUPABASE_URL__';
+        const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 storageKey: 'gideon-auth-token'
